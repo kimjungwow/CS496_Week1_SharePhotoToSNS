@@ -13,6 +13,7 @@
         android:id = "@+id/phoneNumber"
         android:layout_width = "wrap_content"
         android:layout_height="match_parent"
-        android:toRightOf="@+id/name"
+
+        android:layout_marginRight="@+id/name"
         />
 </LinearLayout>

@@ -12,20 +12,20 @@
         android:id="@+id/phoneBookButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="주소록"
+        android:text="phone_numbers"
         />
     <Button
         android:id = "@+id/galleryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="갤러리"
+        android:text="images"
         android:layout_toRightOf="@+id/phoneBookButton"
         />
     <Button
         android.id="@+id/unknownButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="???"
+        android:text="yet"
         android:layout_toRightOf="@+id/galleryButton"
         />
     <ScrollView
@@ -38,7 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below = "@+id/phoneBookButton"
-            android:marginTop = "50dp"
+
+            android:layout_marginTop="50dp"
             >
             <ListView
                 android:id = "@+id/listContacts"
