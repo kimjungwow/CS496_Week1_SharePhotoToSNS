@@ -1,12 +1,17 @@
 package com.example.myapplication;
 
+import android.Manifest;
 import android.content.ContentResolver;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private ListView listContacts;
@@ -17,12 +22,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Permissioncheck();
+
 
         listContacts = findViewById(R.id.listContacts);
         contactName = findViewById(R.id.name);
         contactName = findViewById(R.id.phoneNumber);
-        loadContacts();
+        if (Permissioncheck()==true){
+
+        loadContacts();}
     }
 
     @Override
@@ -72,6 +79,6 @@ public class MainActivity extends AppCompatActivity {
         }
         cursor.close();
 
-        listContacts.setText(builder.toString());
+        //listContacts.setText(builder.toString());
     }
 }
