@@ -5,26 +5,51 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    private Button loadContacts;
-    private TextView listContacts;
+    private ListView listContacts;
+    private TextView contactName;
+    private TextView contactNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listContacts = (TextView) findViewById(R.id.listContacts);
+        Permissioncheck();
+
+        listContacts = findViewById(R.id.listContacts);
+        contactName = findViewById(R.id.name);
+        contactName = findViewById(R.id.phoneNumber);
         loadContacts();
+    }
+
+    @Override
+    public int checkSelfPermission(String permission) {
+        return super.checkSelfPermission(permission);
+    }
+
+    private boolean Permissioncheck() {
+        if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
+            if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     private void loadContacts(){
         StringBuilder builder = new StringBuilder();
         ContentResolver contentResolver = getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+
+        ArrayList<ContactsListviewItem> contactsData = new ArrayList<ContactsListviewItem>();
 
         if(cursor.getCount() > 0) {
             while (cursor.moveToNext()){
