@@ -1,71 +1,30 @@
 package com.example.myapplication;
 
-import android.Manifest;
 import android.content.ContentResolver;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
-public class MainActivity extends AppCompatActivity {
-    private ListView listContacts;
-    private TextView contactName;
-    private TextView contactNumber;
+public class phonebook2 extends AppCompatActivity {
+    private Button loadContacts;
+    private TextView listContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button phoneb = findViewById(R.id.phoneBookButton);
-        phoneb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_phonebook2);
-
-            }
-        });
-
-        listContacts = findViewById(R.id.listContacts);
-        contactName = findViewById(R.id.name);
-        contactName = findViewById(R.id.phoneNumber);
-        if (Permissioncheck()==true){
-
-        loadContacts();}
-    }
-
-    @Override
-    public int checkSelfPermission(String permission) {
-        return super.checkSelfPermission(permission);
-    }
-
-    private boolean Permissioncheck() {
-        if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
-            if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        listContacts = (TextView) findViewById(R.id.listContacts);
+        loadContacts();
     }
 
     private void loadContacts(){
         StringBuilder builder = new StringBuilder();
         ContentResolver contentResolver = getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-
-        ArrayList<ContactsListviewItem> contactsData = new ArrayList<ContactsListviewItem>();
 
         if(cursor.getCount() > 0) {
             while (cursor.moveToNext()){
@@ -88,6 +47,6 @@ public class MainActivity extends AppCompatActivity {
         }
         cursor.close();
 
-        //listContacts.setText(builder.toString());
+        listContacts.setText(builder.toString());
     }
 }

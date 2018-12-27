@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".phonebook"></activity>
+        <activity android:name=".phonebook2"></activity>
     </application>
 
 </manifest>
