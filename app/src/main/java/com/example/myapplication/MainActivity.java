@@ -8,12 +8,19 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private TextView listContacts;
+    private ArrayList<JSONObject> jsonArr = new ArrayList<JSONObject>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -44,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadContacts(){
+    public void loadContacts(){
         StringBuilder builder = new StringBuilder();
         ContentResolver contentResolver = getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
-        ArrayList<ContactsListviewItem> contactsData = new ArrayList<ContactsListviewItem>();
+        ArrayList<ContactModel> contactsData = new ArrayList<ContactModel>();
 
         if(cursor.getCount() > 0) {
             while (cursor.moveToNext()){
@@ -65,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
                     while (cursor2.moveToNext()){
                         String phoneNumber = cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         builder.append("Contact: ").append(name).append(", Phone Number : ").append(phoneNumber).append("\n\n");
+
+                        //add contact information
+                        ContactModel contact = new ContactModel();
+                        contact.setName(name);
+                        contact.setNumber(phoneNumber);
+                        contactsData.add(contact);
                     }
                     cursor2.close();
                 }
@@ -72,6 +85,20 @@ public class MainActivity extends AppCompatActivity {
         }
         cursor.close();
 
+        //put data into TextView
         listContacts.setText(builder.toString());
+
+        //save contacts data json
+        for (ContactModel contact: contactsData){
+            JSONObject obj = new JSONObject();
+            try{
+                obj.put("name", contact.getName());
+                obj.put("number", contact.getNumber());
+                jsonArr.add(obj);
+                Log.d("jsonObject: ",obj.toString());
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
+        }
     }
 }
