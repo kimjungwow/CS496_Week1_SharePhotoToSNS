@@ -38,85 +38,31 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
 
         listContacts = (TextView) rootView.findViewById(R.id.listContacts2);
 
-//        onRequestPermissionsResult(100, REQUIRED_PERMISSIONS, );
-        Permissioncheck();
-//        if (checkselfpermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED){ loadContacts(listContacts);}
+
+        if(Permissioncheck()){ loadContacts(listContacts);}
+
         return rootView;
     }
 
 
     public int checkselfpermission(String permission) {
         return PermissionChecker.checkSelfPermission(getContext(), permission);
-
-//        return super.checkSelfPermission(permission);
-
     }
 
     public boolean Permissioncheck() {
         if (checkselfpermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            loadContacts(listContacts);
+
             return true;
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 100);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 1);
             if (checkselfpermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                loadContacts(listContacts);
+
                 return true;
             } else {
                 return false;
             }
         }
     }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grandResults) {
-//
-//        if ( requestCode == PERMISSIONS_REQUEST_CODE && grandResults.length == REQUIRED_PERMISSIONS.length) {
-//
-//
-//
-//            boolean check_result = true;
-//
-//
-//
-//
-//            for (int result : grandResults) {
-//                if (result != PackageManager.PERMISSION_GRANTED) {
-//                    check_result = false;
-//                    break;
-//                }
-//            }
-//
-//
-//
-//            if ( check_result ) {
-//
-//
-//
-//                loadContacts(listContacts);
-//            }
-//            else {
-//
-//
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), REQUIRED_PERMISSIONS[0])
-//                        || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), REQUIRED_PERMISSIONS[1])) {
-//
-//
-//
-//                    Toast.makeText(getContext(), "The permission was denied. Please run the app again to allow permission.", Toast.LENGTH_LONG).show();
-//
-//
-//                }else {
-//
-//
-//
-//                    Toast.makeText(getContext(), "The permission was denied. You must allow permutations in Settings (app information).", Toast.LENGTH_LONG).show();
-//                }
-//            }
-//
-//        }
-//
-//
-//    }
 
     private void loadContacts(TextView LV) {
         Toast.makeText(getContext(), "hhhhhhhhh", Toast.LENGTH_LONG).show();
