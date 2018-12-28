@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         phoneb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_phonebook2);
+                setContentView(R.layout.activity_phonebook);
 
             }
         });
