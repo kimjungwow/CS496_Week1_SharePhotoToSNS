@@ -8,48 +8,19 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     tools:context="com.example.myapplication.MainActivity">
-    <Button
-        android:id="@+id/phoneBookButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="phone_numbers"
-        />
-    <Button
-        android:id = "@+id/galleryButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="images"
-        android:layout_toRightOf="@+id/phoneBookButton"
-        />
-    <Button
-        android.id="@+id/unknownButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="yet"
-        android:layout_toRightOf="@+id/galleryButton"
-        />
+
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation = "vertical"
-        android:layout_below = "@+id/phoneBookButton"
-        >
-        <LinearLayout
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/listContacts"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below = "@+id/phoneBookButton"
-
-            android:layout_marginTop="50dp"
-            >
-            <ListView
-                android:id = "@+id/listContacts"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="#ffcc22"
-                android:dividerHeight="1.5dp"
-                android:choiceMode="singleChoice"></ListView>
-        </LinearLayout>
+            android:layout_marginTop = "30dp"
+            android:layout_centerHorizontal="true"
+            android:textSize = "20dp"
+        />
     </ScrollView>
-
 
 </RelativeLayout>
