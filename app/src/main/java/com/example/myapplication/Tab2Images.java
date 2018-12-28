@@ -60,37 +60,15 @@ public class Tab2Images extends Fragment {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity().getApplicationContext(), (position + 1) + " 번째 사진", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getActivity().getApplicationContext(),ZoomActivity.class);
+                intent.putExtra("index", position);
+
+                startActivity(intent);
+//                Toast.makeText(getActivity().getApplicationContext(), (position + 1) + " 번째 사진", Toast.LENGTH_SHORT).show();
             }
         });
 
-//        @Override
-//        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//            Toast.makeText(getActivity().getBaseContext(), "resultCode : "+resultCode,Toast.LENGTH_SHORT).show();
-//            if(requestCode==REQ_CODE_SELECT_IMAGE){
-//                if(resultCode==Activity.RESULT_OK) {
-//                    try {
-//                        Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
-//                        ImageView image = (ImageView) getActivity().findViewById(R.id.)
-//                    }
-//                }
-//            }
-//
-//
-//            super.onActivityResult(requestCode, resultCode, data);
-//            if (requestCode == RESULT_LOAD_IMAGE && resultCode == getActivity().RESULT_OK && null != data) {
-//                Uri selectedImage = data.getData();
-//                String[] filePathColumn = { MediaStore.Images.Media.DATA };
-//                Cursor cursor = getActivity().getContentResolver().query(selectedImage,filePathColumn, null, null, null);
-//                cursor.moveToFirst();
-//                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                String picturePath = cursor.getString(columnIndex);
-//                cursor.close();
-//                ImageView imageView = (ImageView) getActivity().findViewById(R.id.imgView);
-//                imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-//            }
-//        }
 
 
         return rootView;
