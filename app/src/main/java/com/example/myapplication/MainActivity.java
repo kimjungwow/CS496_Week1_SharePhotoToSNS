@@ -8,11 +8,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,11 +69,15 @@ public class MainActivity extends AppCompatActivity {
                         String phoneNumber = cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         builder.append("Contact: ").append(name).append(", Phone Number : ").append(phoneNumber).append("\n\n");
 
-                        //add contact information
-                        ContactModel contact = new ContactModel();
-                        contact.setName(name);
-                        contact.setNumber(phoneNumber);
-                        contactsData.add(contact);
+                        //add contact information in form of JSONObject to jsonArr
+                        JSONObject obj = new JSONObject();
+                        try{
+                            obj.put("name", name);
+                            obj.put("number", phoneNumber);
+                            jsonArr.add(obj);
+                        } catch(JSONException e){
+                            e.printStackTrace();
+                        }
                     }
                     cursor2.close();
                 }
@@ -87,18 +87,5 @@ public class MainActivity extends AppCompatActivity {
 
         //put data into TextView
         listContacts.setText(builder.toString());
-
-        //save contacts data json
-        for (ContactModel contact: contactsData){
-            JSONObject obj = new JSONObject();
-            try{
-                obj.put("name", contact.getName());
-                obj.put("number", contact.getNumber());
-                jsonArr.add(obj);
-                Log.d("jsonObject: ",obj.toString());
-            } catch(JSONException e){
-                e.printStackTrace();
-            }
-        }
     }
 }
