@@ -1,9 +1,12 @@
 package com.example.myapplication;
 
+import android.Manifest;
 import android.content.ContentResolver;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -17,8 +20,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listContacts = (TextView) findViewById(R.id.listContacts);
-        loadContacts();
+        listContacts = findViewById(R.id.listContacts);
+        if(Permissioncheck()) loadContacts();
+    }
+
+    @Override
+    public int checkSelfPermission(String permission) {
+        return super.checkSelfPermission(permission);
+    }
+
+    private boolean Permissioncheck() {
+        if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
+            if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     private void loadContacts(){
@@ -39,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                             new String[] {id}, null);
                     while (cursor2.moveToNext()){
                         String phoneNumber = cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        builder.append("Contact: ").append(name).append(", Phone Number : ").append(phoneNumber).append("\n\n");
+                        builder.append(name).append(",  ").append(phoneNumber).append("\n\n");
                     }
                     cursor2.close();
                 }
