@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 public class Main2Activity extends AppCompatActivity {
 
-     /**
+    /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
      * {@link FragmentPagerAdapter} derivative, which will keep every
@@ -92,49 +92,6 @@ public class Main2Activity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main2, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-
-
-            /* here*/
-            /* here*/
-            /* here*/
-            if ((getArguments().getInt(ARG_SECTION_NUMBER, 0))==0) {
-                textView.setText(String.valueOf(getArguments().getInt(ARG_SECTION_NUMBER, 0)));
-
-            } else {
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));}
-            return rootView;
-        }
-    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -148,17 +105,129 @@ public class Main2Activity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
+            //Returning the current tabs
+            switch (position) {
+                case 0:
+                    Tab1Phonebook tab1 = new Tab1Phonebook();
+                    return tab1;
+                case 1:
+                    Tab2Images tab2 = new Tab2Images();
+                    return tab2;
+                case 2:
+                    Tab3Etc tab3 = new Tab3Etc();
+                    return tab3;
+                default:
+                    return null;
 
-
-            return PlaceholderFragment.newInstance(position - 1);
+            }
         }
+//        public Fragment getItem(int position) {
+//            // getItem is called to instantiate the fragment for the given page.
+//            // Return a PlaceholderFragment (defined as a static inner class below).
+//
+//
+//            return PlaceholderFragment.newInstance(position - 1);
+//        }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
             return 3;
         }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "PHONEBOOK";
+                case 1:
+                    return "IMAGES";
+                case 2:
+                    return "ETC";
+            }
+            return null;
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Not used
+
+
+
+///**
+// * A placeholder fragment containing a simple view.
+// */
+//public static class PlaceholderFragment extends Fragment {
+//    /**
+//     * The fragment argument representing the section number for this
+//     * fragment.
+//     */
+//    private static final String ARG_SECTION_NUMBER = "section_number";
+//
+//    public PlaceholderFragment() {
+//    }
+//
+//    /**
+//     * Returns a new instance of this fragment for the given section
+//     * number.
+//     */
+//    public static PlaceholderFragment newInstance(int sectionNumber) {
+//        PlaceholderFragment fragment = new PlaceholderFragment();
+//        Bundle args = new Bundle();
+//        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
+//
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        View rootView = inflater.inflate(R.layout.tab1phonebook, container, false);
+//        TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+//
+//
+//        /* here*/
+//        /* here*/
+//        /* here*/
+//        if ((getArguments().getInt(ARG_SECTION_NUMBER, 0))==0) {
+//            textView.setText(String.valueOf(getArguments().getInt(ARG_SECTION_NUMBER, 0)));
+//
+//        } else {
+//            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));}
+//        return rootView;
+//    }
+//}
