@@ -8,19 +8,37 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
-    private Button loadContacts;
-    private TextView listContacts;
+    private ListView listContacts;
+    private TextView contactName;
+    private TextView contactNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Button phoneb = findViewById(R.id.phoneBookButton);
+        phoneb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_phonebook2);
+
+            }
+        });
+
         listContacts = findViewById(R.id.listContacts);
-        if(Permissioncheck()) loadContacts();
+        contactName = findViewById(R.id.name);
+        contactName = findViewById(R.id.phoneNumber);
+        if (Permissioncheck()==true){
+
+        loadContacts();}
     }
 
     @Override
@@ -47,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver contentResolver = getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
+        ArrayList<ContactsListviewItem> contactsData = new ArrayList<ContactsListviewItem>();
+
         if(cursor.getCount() > 0) {
             while (cursor.moveToNext()){
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
@@ -60,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                             new String[] {id}, null);
                     while (cursor2.moveToNext()){
                         String phoneNumber = cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        builder.append(name).append(",  ").append(phoneNumber).append("\n\n");
+                        builder.append("Contact: ").append(name).append(", Phone Number : ").append(phoneNumber).append("\n\n");
                     }
                     cursor2.close();
                 }
