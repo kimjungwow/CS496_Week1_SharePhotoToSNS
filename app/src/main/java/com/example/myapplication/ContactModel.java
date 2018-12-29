@@ -1,17 +1,19 @@
 package com.example.myapplication;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 
 public class ContactModel{
     private String name, number;
-    private Drawable iconDrawable ;
+    private Bitmap iconbp ;
 
-    public Drawable getIcon() {
-        return this.iconDrawable ;
+    public Bitmap getIcon() {
+        return this.iconbp ;
     }
 
-    public void setIcon(Drawable icon) {
-        iconDrawable = icon ;
+    public void setIcon(Bitmap icon) {
+        this.iconbp = icon ;
     }
 
     public String getName() {
