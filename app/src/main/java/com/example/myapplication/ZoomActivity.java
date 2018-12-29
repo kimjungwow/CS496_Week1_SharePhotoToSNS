@@ -1,22 +1,15 @@
 package com.example.myapplication;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import net.alhazmy13.imagefilter.ImageFilter;
 
 public class ZoomActivity extends FragmentActivity {
     // Hold a reference to the current animator,
@@ -32,17 +25,34 @@ public class ZoomActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zoom);
-        int[] img = {R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d, R.drawable.e, R.drawable.f, R.drawable.g, R.drawable.h,
+        final int[] img = {R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d, R.drawable.e, R.drawable.f, R.drawable.g, R.drawable.h,
                 R.drawable.i, R.drawable.j, R.drawable.k, R.drawable.l, R.drawable.m, R.drawable.n, R.drawable.o,
                 R.drawable.p, R.drawable.q, R.drawable.r, R.drawable.s, R.drawable.t, R.drawable.u, R.drawable.v
         };
 
         // Hook up clicks on the thumbnail views.
         Intent intent = getIntent();
-        final int position = intent.getIntExtra("index",0);
+        final int position = intent.getIntExtra("index", 0);
         final ImageView zoomview = findViewById(R.id.expanded_image);
         zoomview.setImageResource(img[position]);
 
+
+        final View fb = findViewById(R.id.filterbutton);
+        fb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                zoomview.invalidate();
+                BitmapDrawable drawable = (BitmapDrawable) zoomview.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+               Bitmap next = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
+
+                zoomview.setImageDrawable(null);
+                ImageView filterview = findViewById(R.id.filtered_image);
+//                filterview.setImageResource(img[position+1]);
+                filterview.setImageBitmap(next);
+            }
+
+        });
 
         final View thumb1View = findViewById(R.id.thumb_button_1);
         thumb1View.setOnClickListener(new View.OnClickListener() {
@@ -129,13 +139,6 @@ public class ZoomActivity extends Fragment {
         return thumb1View;
     }
 */
-
-
-
-
-
-
-
 
 
 //
@@ -275,7 +278,6 @@ public class ZoomActivity extends Fragment {
 //            }
 //        });
 //    }
-
 
 
 //}

@@ -1,39 +1,15 @@
 package com.example.myapplication;
 
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.PermissionChecker;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Gallery;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.example.myapplication.ImageAdapter;
-
-import java.io.File;
-import java.util.ArrayList;
 
 
 public class Tab2Images extends Fragment {

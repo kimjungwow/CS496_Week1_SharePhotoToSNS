@@ -81,7 +81,6 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
     public int checkselfpermission(String permission) {
         return PermissionChecker.checkSelfPermission(getContext(), permission);
 
-//        return super.checkSelfPermission(permission);
 
     }
 
