@@ -3,13 +3,17 @@ package com.example.myapplication;
 import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import net.alhazmy13.imagefilter.ImageFilter;
+
+import static java.security.AccessController.getContext;
 
 public class ZoomActivity extends FragmentActivity {
     // Hold a reference to the current animator,
@@ -20,6 +24,8 @@ public class ZoomActivity extends FragmentActivity {
     // duration is ideal for subtle animations or animations that occur
     // very frequently.
     private int mShortAnimationDuration;
+
+    ImageView zoomview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +38,7 @@ public class ZoomActivity extends FragmentActivity {
 
         // Hook up clicks on the thumbnail views.
         Intent intent = getIntent();
-        final int position = intent.getIntExtra("index", 0);
-        final ImageView zoomview = findViewById(R.id.expanded_image);
-        zoomview.setImageResource(img[position]);
+        zoomview = findViewById(R.id.expanded_image);
 
 
         final View fb = findViewById(R.id.filterbutton);
@@ -44,12 +48,9 @@ public class ZoomActivity extends FragmentActivity {
                 zoomview.invalidate();
                 BitmapDrawable drawable = (BitmapDrawable) zoomview.getDrawable();
                 Bitmap bitmap = drawable.getBitmap();
-               Bitmap next = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
+                Bitmap filtered = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
 
-                zoomview.setImageDrawable(null);
-                ImageView filterview = findViewById(R.id.filtered_image);
-//                filterview.setImageResource(img[position+1]);
-                filterview.setImageBitmap(next);
+                zoomview.setImageBitmap(filtered);
             }
 
         });
@@ -68,6 +69,20 @@ public class ZoomActivity extends FragmentActivity {
         // Retrieve and cache the system's default "short" animation time.
         mShortAnimationDuration = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        String imgPath = getIntent().getStringExtra("imagePath");
+        if (imgPath != ""){
+            Bitmap img = BitmapFactory.decodeFile(imgPath);
+            zoomview.setImageBitmap(img);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Cannot load image",Toast.LENGTH_LONG).show();
+            onBackPressed();
+        }
     }
 
 }

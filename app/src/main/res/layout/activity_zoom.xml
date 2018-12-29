@@ -7,19 +7,6 @@
     tools:layout_editor_absoluteY="81dp">
 
     <ImageView
-        android:id="@+id/filtered_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:baselineAligned="false"
-
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="?attr/colorBackgroundFloating" />
-
-    <ImageView
         android:id="@+id/expanded_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
