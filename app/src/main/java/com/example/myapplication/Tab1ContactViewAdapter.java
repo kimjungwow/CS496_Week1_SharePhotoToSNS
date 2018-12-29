@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 
@@ -59,6 +60,7 @@ public class Tab1ContactViewAdapter extends BaseAdapter {
 
             holder.tvname = (TextView) convertView.findViewById(R.id.name);
             holder.tvnumber = (TextView) convertView.findViewById(R.id.number);
+            holder.ivphoto = (ImageView) convertView.findViewById(R.id.contactPhoto);
 
             convertView.setTag(holder);
         }else {
@@ -68,6 +70,7 @@ public class Tab1ContactViewAdapter extends BaseAdapter {
 
         holder.tvname.setText(contactModelArrayList.get(position).getName());
         holder.tvnumber.setText(contactModelArrayList.get(position).getNumber());
+        holder.ivphoto.setImageBitmap(contactModelArrayList.get(position).getIcon());
 
         return convertView;
     }
@@ -75,6 +78,7 @@ public class Tab1ContactViewAdapter extends BaseAdapter {
     private class ViewHolder {
 
         protected TextView tvname, tvnumber;
+        protected ImageView ivphoto;
 
     }
 }
