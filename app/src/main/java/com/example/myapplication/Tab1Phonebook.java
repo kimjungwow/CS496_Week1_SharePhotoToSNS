@@ -11,9 +11,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.PermissionChecker;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,8 +25,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
-    private TextView listContacts;
-    private ArrayList<JSONObject> jsonArr = new ArrayList<JSONObject>();
+    private ListView contactsListView;
+    private Tab1ContactViewAdapter adapter;
+    private ArrayList<ContactModel> contactModelArrayList;
+    //private ArrayList<JSONObject> jsonArr = new ArrayList<JSONObject>();
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
 
@@ -33,15 +37,23 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i("전화번호부 fragment", "onCreateView()");
         Permissioncheck();
         View rootView = inflater.inflate(R.layout.tab1phonebook, container, false);
+        contactsListView = rootView.findViewById(R.id.contactLV);
+        adapter = new Tab1ContactViewAdapter(this.getContext(), contactModelArrayList);
+        contactModelArrayList = new ArrayList<>();
 
-        listContacts = (TextView) rootView.findViewById(R.id.listContacts2);
-
-//        onRequestPermissionsResult(100, REQUIRED_PERMISSIONS, );
-        Permissioncheck();
-//        if (checkselfpermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED){ loadContacts(listContacts);}
         return rootView;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.i("전화번호부 fragment", "onResume()");
+        if(Permissioncheck()) {
+            loadContacts(contactsListView);
+        }
     }
 
 
@@ -54,12 +66,12 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
 
     public boolean Permissioncheck() {
         if (checkselfpermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            loadContacts(listContacts);
+            loadContacts(contactsListView);
             return true;
         } else {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 100);
             if (checkselfpermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                loadContacts(listContacts);
+                loadContacts(contactsListView);
                 return true;
             } else {
                 return false;
@@ -67,99 +79,51 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
         }
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grandResults) {
-//
-//        if ( requestCode == PERMISSIONS_REQUEST_CODE && grandResults.length == REQUIRED_PERMISSIONS.length) {
-//
-//
-//
-//            boolean check_result = true;
-//
-//
-//
-//
-//            for (int result : grandResults) {
-//                if (result != PackageManager.PERMISSION_GRANTED) {
-//                    check_result = false;
-//                    break;
-//                }
-//            }
-//
-//
-//
-//            if ( check_result ) {
-//
-//
-//
-//                loadContacts(listContacts);
-//            }
-//            else {
-//
-//
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), REQUIRED_PERMISSIONS[0])
-//                        || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), REQUIRED_PERMISSIONS[1])) {
-//
-//
-//
-//                    Toast.makeText(getContext(), "The permission was denied. Please run the app again to allow permission.", Toast.LENGTH_LONG).show();
-//
-//
-//                }else {
-//
-//
-//
-//                    Toast.makeText(getContext(), "The permission was denied. You must allow permutations in Settings (app information).", Toast.LENGTH_LONG).show();
-//                }
-//            }
-//
-//        }
-//
-//
-//    }
-
-    private void loadContacts(TextView LV) {
+    private void loadContacts(ListView LV) {
         Toast.makeText(getContext(), "hhhhhhhhh", Toast.LENGTH_LONG).show();
         StringBuilder builder = new StringBuilder();
         ContentResolver contentResolver = getActivity().getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
-        ArrayList<ContactsListviewItem> contactsData = new ArrayList<ContactsListviewItem>();
+        Cursor phones = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+        if (phones.getCount() != contactModelArrayList.size()) {
+            contactModelArrayList.removeAll(contactModelArrayList);
+            while (phones.moveToNext()) {
+                String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-        if (cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
+                ContactModel contactModel = new ContactModel();
+                contactModel.setName(name);
+                contactModel.setNumber(phoneNumber);
+                contactModelArrayList.add(contactModel);
+                //Log.d("name>>", name + "  " + phoneNumber);
 
-                if (hasPhoneNumber > 0) {
-                    Cursor cursor2 = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    while (cursor2.moveToNext()) {
-                        String phoneNumber = cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        builder.append("Contact: ").append(name).append(", Phone Number : ").append(phoneNumber).append("\n\n");
-                        //add contact information in form of JSONObject to jsonArr
-                        JSONObject obj = new JSONObject();
-                        try{
-                            obj.put("name", name);
-                            obj.put("number", phoneNumber);
-                            jsonArr.add(obj);
-                        } catch(JSONException e){
-                            e.printStackTrace();
-                        }
-
-                    }
-
-
-                    cursor2.close();
-                }
+                //add contact information in form of JSONObject to jsonArr
+                /*
+                JSONObject obj = new JSONObject();
+                try {
+                    obj.put("name", name);
+                    obj.put("number", phoneNumber);
+                    jsonArr.add(obj);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
             }
+            phones.close();
         }
-        cursor.close();
-
-        LV.setText(builder.toString());
+        adapter = new Tab1ContactViewAdapter(getActivity().getApplicationContext(), contactModelArrayList);
+        LV.setAdapter(adapter);
+        return;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause(); Log.i("전화번호부 fragment", "onPause()"); }
+    @Override
+    public void onStop() {
+        super.onStop(); Log.i("전화번호부 fragment", "onStop()"); }
+    @Override
+    public void onDestroy() {
+        super.onDestroy(); Log.i("전화번호부 fragment", "onDestroy()"); }
 }
+
