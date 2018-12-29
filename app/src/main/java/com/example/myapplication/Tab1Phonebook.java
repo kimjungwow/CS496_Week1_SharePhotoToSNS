@@ -38,7 +38,6 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i("전화번호부 fragment", "onCreateView()");
-        Permissioncheck();
         View rootView = inflater.inflate(R.layout.tab1phonebook, container, false);
         contactsListView = rootView.findViewById(R.id.contactLV);
         adapter = new Tab1ContactViewAdapter(this.getContext(), contactModelArrayList);
