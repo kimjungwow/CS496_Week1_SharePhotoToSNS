@@ -18,7 +18,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class ZoomActivity extends Fragment {
+public class ZoomActivity extends FragmentActivity {
     // Hold a reference to the current animator,
     // so that it can be canceled mid-way.
     private Animator mCurrentAnimator;
@@ -27,6 +27,71 @@ public class ZoomActivity extends Fragment {
     // duration is ideal for subtle animations or animations that occur
     // very frequently.
     private int mShortAnimationDuration;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_zoom);
+        int[] img = {R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d, R.drawable.e, R.drawable.f, R.drawable.g, R.drawable.h,
+                R.drawable.i, R.drawable.j, R.drawable.k, R.drawable.l, R.drawable.m, R.drawable.n, R.drawable.o,
+                R.drawable.p, R.drawable.q, R.drawable.r, R.drawable.s, R.drawable.t, R.drawable.u, R.drawable.v
+        };
+
+        // Hook up clicks on the thumbnail views.
+        Intent intent = getIntent();
+        final int position = intent.getIntExtra("index",0);
+        final ImageView zoomview = findViewById(R.id.expanded_image);
+        zoomview.setImageResource(img[position]);
+
+
+        final View thumb1View = findViewById(R.id.thumb_button_1);
+        thumb1View.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                zoomImageFromThumb(thumb1View, R.drawable.image1);
+//                Toast.makeText(getApplicationContext(), position + " 번째 사진", Toast.LENGTH_SHORT).show();
+
+                onBackPressed(); // Go back to previous fragment!
+            }
+        });
+
+        // Retrieve and cache the system's default "short" animation time.
+        mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+    }
+
+}
+
+
+
+
+
+
+
+
+
+/*
+public class ZoomActivity extends Fragment {
+
+
+    public static ZoomActivity newInstance() {
+        Bundle args = new Bundle();
+        ZoomActivity za = new ZoomActivity();
+        za.setArguments(args);
+        return za;
+    }
+    public ZoomActivity() {
+        // Required empty public constructor
+    }
+    // Hold a reference to the current animator,
+    // so that it can be canceled mid-way.
+    private Animator mCurrentAnimator;
+
+    // The system "short" animation time duration, in milliseconds. This
+    // duration is ideal for subtle animations or animations that occur
+    // very frequently.
+    private int mShortAnimationDuration;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,10 +117,10 @@ public class ZoomActivity extends Fragment {
             @Override
             public void onClick(View view) {
 //                zoomImageFromThumb(thumb1View, R.drawable.c);
-//                Toast.makeText(getApplicationContext(), position + " 번째 사진", Toast.LENGTH_SHORT).show();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().remove(ZoomActivity.this).commit();
-                fragmentManager.popBackStackImmediate();
+                Toast.makeText(getActivity().getApplicationContext(), position + " 번째 사진", Toast.LENGTH_SHORT).show();
+//                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                fragmentManager.beginTransaction().remove(ZoomActivity.this).commit();
+//                fragmentManager.popBackStackImmediate();
             }
         });
 
@@ -63,6 +128,15 @@ public class ZoomActivity extends Fragment {
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
         return thumb1View;
     }
+*/
+
+
+
+
+
+
+
+
 
 //
 //    private void zoomImageFromThumb(final View thumbView, int imageResId) {
@@ -204,4 +278,4 @@ public class ZoomActivity extends Fragment {
 
 
 
-}
+//}
