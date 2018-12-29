@@ -3,10 +3,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
+    android:id="@+id/tab1Layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="100dp"
+    android:paddingTop="30dp"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:paddingBottom="20dp"
     android:orientation="vertical"
     tools:context="com.example.myapplication.Main2Activity"
     tools:layout_editor_absoluteY="81dp">
@@ -15,7 +18,21 @@
             android:id="@+id/contactLV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:divider="@null" >
-        </ListView>
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:divider="@null"
+            android:layout_marginBottom="80dp"></ListView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/messageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="70dp"
+            android:clickable="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="end|bottom"
+            app:srcCompat="@android:drawable/ic_dialog_email"/>
 
 </RelativeLayout>

@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -9,7 +10,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -48,6 +51,19 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
         contactsListView = rootView.findViewById(R.id.contactLV);
         adapter = new Tab1ContactViewAdapter(this.getContext(), contactModelArrayList);
         contactModelArrayList = new ArrayList<>();
+
+        FloatingActionButton msgButton = (FloatingActionButton) rootView.findViewById(R.id.messageButton);
+        msgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String defaultApplication = Settings.Secure.getString(getContext().getContentResolver(), "sms_default_application");
+                PackageManager pm = getContext().getPackageManager();
+                Intent intent = pm.getLaunchIntentForPackage(defaultApplication );
+                if (intent != null) {
+                    startActivity(intent);
+                }
+            }
+        });
 
         return rootView;
     }
