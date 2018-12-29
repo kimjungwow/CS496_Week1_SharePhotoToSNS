@@ -21,6 +21,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:divider="@null"
+            android:choiceMode="singleChoice"
+            android:listSelector="#CCCBCB"
             android:layout_marginBottom="80dp"></ListView>
 
         <android.support.design.widget.FloatingActionButton

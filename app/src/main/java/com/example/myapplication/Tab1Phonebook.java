@@ -1,3 +1,4 @@
+
 package com.example.myapplication;
 
 import android.Manifest;
@@ -8,9 +9,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,10 +21,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.PermissionChecker;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +45,9 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
     private ArrayList<JSONObject> jsonArr = new ArrayList<JSONObject>();
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
+    public int sel_pos=-1;
 
+    public FloatingActionButton msgButton;
 
 
     @Override
@@ -52,19 +59,8 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
         adapter = new Tab1ContactViewAdapter(this.getContext(), contactModelArrayList);
         contactModelArrayList = new ArrayList<>();
 
-        FloatingActionButton msgButton = (FloatingActionButton) rootView.findViewById(R.id.messageButton);
-        msgButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String defaultApplication = Settings.Secure.getString(getContext().getContentResolver(), "sms_default_application");
-                PackageManager pm = getContext().getPackageManager();
-                Intent intent = pm.getLaunchIntentForPackage(defaultApplication );
-                if (intent != null) {
-                    startActivity(intent);
-                }
-            }
-        });
 
+        msgButton = (FloatingActionButton) rootView.findViewById(R.id.messageButton);
         return rootView;
     }
 
@@ -72,9 +68,87 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
     public void onResume(){
         super.onResume();
         Log.i("전화번호부 fragment", "onResume()");
+
         if(Permissioncheck()) {
             loadContacts(contactsListView);
         }
+
+        contactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+
+                if(sel_pos==position) {
+                    contactsListView.setAdapter(adapter);
+                    sel_pos=-1;
+
+
+
+
+                }
+                else{
+                sel_pos = position;}
+
+            }
+
+        });
+        msgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (contactsListView.getCheckedItemCount()!=0) {
+
+
+                    Uri smsUri;
+
+                    String temp = ((ContactModel) contactsListView.getItemAtPosition(sel_pos)).getNumber();
+                    String phone[] = new String[1];
+                    if(temp.contains("-")){
+
+
+
+
+                    String phonenumbers[] = temp.split("-");
+                    StringBuilder sb = new StringBuilder("010");
+                    sb.append(phonenumbers[1]);
+                    sb.append(phonenumbers[2]);
+
+                    phone[0]= sb.toString();}
+                    else {
+                        phone[0]=temp;
+                    }
+
+
+
+
+                        smsUri = Uri.parse("smsto:" + Uri.encode(TextUtils.join(",", phone  )));
+
+
+                    Intent intent;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        intent = new Intent(Intent.ACTION_SENDTO, smsUri);
+                        intent.setPackage(Telephony.Sms.getDefaultSmsPackage(getActivity().getApplicationContext()));
+                    } else {
+                        intent = new Intent(Intent.ACTION_VIEW, smsUri);
+                    }
+
+
+
+                    startActivity(intent);
+
+                }
+                else {
+                    String defaultApplication = Settings.Secure.getString(getContext().getContentResolver(), "sms_default_application");
+                    PackageManager pm = getContext().getPackageManager();
+                    Intent intent = pm.getLaunchIntentForPackage(defaultApplication );
+
+                        startActivity(intent);
+
+            }
+        }});
+
+
+
     }
 
 
@@ -154,7 +228,8 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
             phones.close();
         }
         adapter = new Tab1ContactViewAdapter(getActivity().getApplicationContext(), contactModelArrayList);
-        LV.setAdapter(adapter);
+        if(adapter!=null){
+        LV.setAdapter(adapter);}
         return;
     }
 
