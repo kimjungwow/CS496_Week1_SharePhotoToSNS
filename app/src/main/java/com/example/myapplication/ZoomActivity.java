@@ -57,18 +57,6 @@ public class ZoomActivity extends FragmentActivity {
 
         });
 
-        /* should change to save button
-        final View thumb1View = findViewById(R.id.thumb_button_1);
-        thumb1View.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                zoomImageFromThumb(thumb1View, R.drawable.image1);
-//                Toast.makeText(getApplicationContext(), position + " 번째 사진", Toast.LENGTH_SHORT).show();
-
-                onBackPressed(); // Go back to previous fragment!
-            }
-        });
-        */
 
         // Retrieve and cache the system's default "short" animation time.
         mShortAnimationDuration = getResources().getInteger(
