@@ -12,15 +12,18 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/appbar_padding_top"
+
+        android:background="@color/royalblue"
         android:theme="@style/AppTheme.AppBarOverlay">
+
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_weight="1"
-            android:background="?attr/colorPrimary"
+            android:background="@color/mediumblue"
+
 
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay"
@@ -37,6 +40,7 @@
                 android:id="@+id/tabItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/skyblue"
 
                 android:text="Phonebook" />
 
@@ -44,12 +48,15 @@
                 android:id="@+id/tabItem2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/skyblue"
                 android:text="Images" />
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabItem3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/skyblue"
+
                 android:text="Share" />
 
         </android.support.design.widget.TabLayout>
