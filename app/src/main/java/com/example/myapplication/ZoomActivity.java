@@ -71,8 +71,6 @@ public class ZoomActivity extends FragmentActivity {
         thumb1View.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                zoomImageFromThumb(thumb1View, R.drawable.image1);
-//                Toast.makeText(getApplicationContext(), position + " 번째 사진", Toast.LENGTH_SHORT).show();
 
                 onBackPressed(); // Go back to previous fragment!
             }

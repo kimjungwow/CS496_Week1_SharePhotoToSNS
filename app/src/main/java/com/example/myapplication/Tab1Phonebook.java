@@ -222,7 +222,9 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
             phones.close();
         }
 
+
         File firstmyfile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
         File myfile = new File(firstmyfile, "json_phonebook.txt");
         try (FileWriter fileWriter = new FileWriter(myfile)) {
             String jsonstring;

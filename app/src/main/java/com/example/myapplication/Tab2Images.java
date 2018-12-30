@@ -44,6 +44,7 @@ public class Tab2Images extends Fragment {
     public void onResume(){
         super.onResume();
         if(ReadPermissioncheck()) loadPictures();
+
         writePermission = WritePermissioncheck();
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
