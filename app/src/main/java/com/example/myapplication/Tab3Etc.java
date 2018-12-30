@@ -61,17 +61,6 @@ public class Tab3Etc extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (WritePermissionCheck()){
-                    BitmapDrawable filteredDrawable = (BitmapDrawable) newPicture.getDrawable();
-                    Bitmap newBP = filteredDrawable.getBitmap();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                    String title = sdf.format(new Date());
-                    MediaStore.Images.Media.insertImage(getContext().getContentResolver(), newBP ,title, "description");
-                }
-
-                else {
-                    Toast.makeText(getContext(), "Cannot save image.", Toast.LENGTH_SHORT).show();
-                }
             }
         });
 
