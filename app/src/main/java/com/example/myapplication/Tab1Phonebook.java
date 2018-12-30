@@ -3,6 +3,7 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -22,6 +24,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.PermissionChecker;
 import android.text.TextUtils;
+import android.util.JsonWriter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +37,12 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -44,8 +51,8 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
     private ArrayList<ContactModel> contactModelArrayList;
     private ArrayList<JSONObject> jsonArr = new ArrayList<JSONObject>();
     private static final int PERMISSIONS_REQUEST_CODE = 100;
-    String[] REQUIRED_PERMISSIONS  = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
-    public int sel_pos=-1;
+    String[] REQUIRED_PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
+    public int sel_pos = -1;
 
     public FloatingActionButton msgButton;
 
@@ -65,30 +72,25 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         Log.i("전화번호부 fragment", "onResume()");
 
-        if(Permissioncheck()) {
+        if (Permissioncheck()) {
             loadContacts(contactsListView);
         }
 
         contactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-
-                if(sel_pos==position) {
+                if (sel_pos == position) {
                     contactsListView.setAdapter(adapter);
-                    sel_pos=-1;
+                    sel_pos = -1;
 
 
-
-
+                } else {
+                    sel_pos = position;
                 }
-                else{
-                sel_pos = position;}
 
             }
 
@@ -96,32 +98,26 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
         msgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (contactsListView.getCheckedItemCount()!=0) {
+                if (contactsListView.getCheckedItemCount() != 0) {
 
 
                     Uri smsUri;
 
                     String temp = ((ContactModel) contactsListView.getItemAtPosition(sel_pos)).getNumber();
                     String phone[] = new String[1];
-                    if(temp.contains("-")){
+                    if (temp.contains("-")) {
+                        String phonenumbers[] = temp.split("-");
+                        StringBuilder sb = new StringBuilder("010");
+                        sb.append(phonenumbers[1]);
+                        sb.append(phonenumbers[2]);
 
-
-
-
-                    String phonenumbers[] = temp.split("-");
-                    StringBuilder sb = new StringBuilder("010");
-                    sb.append(phonenumbers[1]);
-                    sb.append(phonenumbers[2]);
-
-                    phone[0]= sb.toString();}
-                    else {
-                        phone[0]=temp;
+                        phone[0] = sb.toString();
+                    } else {
+                        phone[0] = temp;
                     }
 
 
-
-
-                        smsUri = Uri.parse("smsto:" + Uri.encode(TextUtils.join(",", phone  )));
+                    smsUri = Uri.parse("smsto:" + Uri.encode(TextUtils.join(",", phone)));
 
 
                     Intent intent;
@@ -133,20 +129,18 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
                     }
 
 
+                    startActivity(intent);
+
+                } else {
+                    String defaultApplication = Settings.Secure.getString(getContext().getContentResolver(), "sms_default_application");
+                    PackageManager pm = getContext().getPackageManager();
+                    Intent intent = pm.getLaunchIntentForPackage(defaultApplication);
 
                     startActivity(intent);
 
                 }
-                else {
-                    String defaultApplication = Settings.Secure.getString(getContext().getContentResolver(), "sms_default_application");
-                    PackageManager pm = getContext().getPackageManager();
-                    Intent intent = pm.getLaunchIntentForPackage(defaultApplication );
-
-                        startActivity(intent);
-
             }
-        }});
-
+        });
 
 
     }
@@ -192,7 +186,7 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
                 String image_uri = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
 
                 //if image is not default
-                if (image_uri != null){
+                if (image_uri != null) {
                     try {
                         bp = MediaStore.Images.Media
                                 .getBitmap(getContext().getContentResolver(),
@@ -227,20 +221,46 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
             }
             phones.close();
         }
+
+        File firstmyfile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File myfile = new File(firstmyfile, "json_phonebook.txt");
+        try (FileWriter fileWriter = new FileWriter(myfile)) {
+            String jsonstring;
+            for (JSONObject s : jsonArr) {
+
+                jsonstring = s.toString();
+
+                fileWriter.append(jsonstring);
+
+            }
+
+        } catch (IOException e) {
+            //Handle exception
+        }
+
         adapter = new Tab1ContactViewAdapter(getActivity().getApplicationContext(), contactModelArrayList);
-        if(!(adapter.isEmpty())){
-        LV.setAdapter(adapter);}
+        if (!(adapter.isEmpty())) {
+            LV.setAdapter(adapter);
+        }
         return;
     }
 
     @Override
     public void onPause() {
-        super.onPause(); Log.i("전화번호부 fragment", "onPause()"); }
+        super.onPause();
+        Log.i("전화번호부 fragment", "onPause()");
+    }
+
     @Override
     public void onStop() {
-        super.onStop(); Log.i("전화번호부 fragment", "onStop()"); }
+        super.onStop();
+        Log.i("전화번호부 fragment", "onStop()");
+    }
+
     @Override
     public void onDestroy() {
-        super.onDestroy(); Log.i("전화번호부 fragment", "onDestroy()"); }
+        super.onDestroy();
+        Log.i("전화번호부 fragment", "onDestroy()");
+    }
 }
 
