@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.media.FaceDetector;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -18,9 +20,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import net.alhazmy13.imagefilter.ImageFilter;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class Tab3Etc extends Fragment {
@@ -40,10 +56,55 @@ public class Tab3Etc extends Fragment {
     boolean writePermission;
     boolean readPermission;
     ImageAdapter adapter;
+
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
+
+
+    Target target = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            SharePhoto sharePhoto = new SharePhoto.Builder()
+                    .setBitmap(bitmap)
+                    .build();
+
+
+            if (ShareDialog.canShow(SharePhotoContent.class)) {
+                SharePhotoContent content = new SharePhotoContent.Builder()
+                        .addPhoto(sharePhoto)
+                        .build();
+                shareDialog.show(content);
+
+            }
+        }
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+
+        }
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+        }
+    };
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+
         View rootView = inflater.inflate(R.layout.tab3etc, container, false);
+
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(getActivity());
+
+
+
+
+
         cameraButton = rootView.findViewById(R.id.cameraButton);
         galleryButton = rootView.findViewById(R.id.galleryButton);
         shareButton = rootView.findViewById(R.id.shareButton);
@@ -51,6 +112,42 @@ public class Tab3Etc extends Fragment {
         newPicture = rootView.findViewById(R.id.newImage);
         recyclerView = rootView.findViewById(R.id.newPicFilterThumbnails);
         mainImage =  BitmapFactory.decodeResource(getResources(), R.drawable.default_empty_image);
+
+
+        shareButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //Create callback
+                shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+                    @Override
+                    public void onSuccess(Sharer.Result result) {
+                        Toast.makeText(getActivity().getApplicationContext(), "Share Successful!", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(getActivity().getApplicationContext(), "Share cancel!", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        Toast.makeText(getActivity().getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+
+
+                //We will fetch photo from link and conver to bitmap
+                Picasso.with(getActivity().getBaseContext())
+                        .load("https://en.wikipedia.org/wiki/Batman#/media/File:Batman_DC_Comics.png")
+                        .into(target);
+
+            }
+        });
 
         //open camera app
         cameraButton.setOnClickListener(new Button.OnClickListener() {
@@ -71,16 +168,12 @@ public class Tab3Etc extends Fragment {
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (ReadPermissioncheck()) {
-
-                    readPermission=ReadPermissioncheck();
-                    Intent intent = new Intent(getActivity().getApplicationContext(), Tab3Gallery.class);
-                    intent.putExtra("readPermission", readPermission);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_GALLERY);
 
 
-                    startActivity(intent);
-                }
 
             }
         });
@@ -106,8 +199,20 @@ public class Tab3Etc extends Fragment {
             LoadFilterThumbnails();
         }
         else if (requestCode == REQUEST_GALLERY && resultCode == getActivity().RESULT_OK) {
+            try {
+                InputStream is = getActivity().getContentResolver().openInputStream(data.getData());
+                mainImage = BitmapFactory.decodeStream(is);
+                is.close();
+                if (mainImage != null) {
+                    newPicture.setImageBitmap(mainImage);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             //갤러리 이미지 가져오기
         }
+
+
     }
 
     private void LoadFilterThumbnails(){
