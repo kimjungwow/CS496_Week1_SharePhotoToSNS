@@ -1,12 +1,14 @@
 package com.cs496.myapplication;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.FaceDetector;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -27,15 +29,19 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.ShareMediaContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import net.alhazmy13.imagefilter.ImageFilter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -43,7 +49,9 @@ public class Tab3Etc extends Fragment {
     private View cameraButton;
     private View galleryButton;
     private View shareButton;
+//    ShareButton shareButton;
     private View saveButton;
+
     GridView gridview;
     private ImageView newPicture;
     private Bitmap mainImage;
@@ -59,7 +67,7 @@ public class Tab3Etc extends Fragment {
 
     CallbackManager callbackManager;
     ShareDialog shareDialog;
-
+    ShareContent shareContent;
 
     Target target = new Target() {
         @Override
@@ -76,6 +84,10 @@ public class Tab3Etc extends Fragment {
                 shareDialog.show(content);
 
             }
+//            shareContent = new ShareMediaContent.Builder()
+//                    .addMedium(sharePhoto)
+//                    .build();
+//            shareButton.setShareContent(shareContent);
         }
         @Override
         public void onBitmapFailed(Drawable errorDrawable) {
@@ -108,6 +120,7 @@ public class Tab3Etc extends Fragment {
         cameraButton = rootView.findViewById(R.id.cameraButton);
         galleryButton = rootView.findViewById(R.id.galleryButton);
         shareButton = rootView.findViewById(R.id.shareButton);
+
         saveButton = rootView.findViewById(R.id.saveButton);
         newPicture = rootView.findViewById(R.id.newImage);
         recyclerView = rootView.findViewById(R.id.newPicFilterThumbnails);
@@ -139,12 +152,16 @@ public class Tab3Etc extends Fragment {
                     }
                 });
 
-
-
+                Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), mainImage);
+//
                 //We will fetch photo from link and conver to bitmap
                 Picasso.with(getActivity().getBaseContext())
-                        .load("https://en.wikipedia.org/wiki/Batman#/media/File:Batman_DC_Comics.png")
+//                        .load("https://en.wikipedia.org/wiki/Batman#/media/File:Batman_DC_Comics.png")
+                        .load(bitmapuri)
                         .into(target);
+
+
+//                Toast.makeText(getActivity().getApplicationContext(),"here",Toast.LENGTH_LONG).show();
 
             }
         });
@@ -180,6 +197,14 @@ public class Tab3Etc extends Fragment {
         return rootView;
     }
 
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
     @Override
     public void onResume(){
         super.onResume();
@@ -209,7 +234,7 @@ public class Tab3Etc extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //갤러리 이미지 가져오기
+
         }
 
 
