@@ -29,6 +29,7 @@
             android:layout_marginRight = "30dp">
 
             <TextView
+                android:fontFamily="@font/cat"
                 android:id="@+id/name"
                 android:layout_width="fill_parent"
                 android:layout_height="25dp"
@@ -39,6 +40,7 @@
                 android:textSize="20sp" />
 
             <TextView
+                android:fontFamily="@font/cat"
                 android:id="@+id/number"
                 android:layout_width="fill_parent"
                 android:layout_height="25dp"
