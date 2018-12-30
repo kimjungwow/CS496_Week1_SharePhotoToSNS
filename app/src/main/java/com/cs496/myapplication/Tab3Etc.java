@@ -54,7 +54,7 @@ public class Tab3Etc extends Fragment {
 
     GridView gridview;
     private ImageView newPicture;
-    private Bitmap mainImage;
+    private Bitmap mainImage,shareImage;
     private RecyclerView recyclerView;
 
     int REQUEST_IMAGE_CAPTURE = 1;
@@ -152,7 +152,7 @@ public class Tab3Etc extends Fragment {
                     }
                 });
 
-                Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), mainImage);
+                Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), shareImage);
 //
                 //We will fetch photo from link and conver to bitmap
                 Picasso.with(getActivity().getBaseContext())
@@ -161,7 +161,7 @@ public class Tab3Etc extends Fragment {
                         .into(target);
 
 
-//                Toast.makeText(getActivity().getApplicationContext(),"here",Toast.LENGTH_LONG).show();
+
 
             }
         });
@@ -220,6 +220,7 @@ public class Tab3Etc extends Fragment {
             }
             Bundle extras = data.getExtras();
             mainImage = (Bitmap) extras.get("data");
+            shareImage=mainImage;
             newPicture.setImageBitmap(mainImage);
             LoadFilterThumbnails();
         }
@@ -227,6 +228,7 @@ public class Tab3Etc extends Fragment {
             try {
                 InputStream is = getActivity().getContentResolver().openInputStream(data.getData());
                 mainImage = BitmapFactory.decodeStream(is);
+                shareImage=mainImage;
                 is.close();
                 if (mainImage != null) {
                     newPicture.setImageBitmap(mainImage);
@@ -289,15 +291,20 @@ public class Tab3Etc extends Fragment {
     private Bitmap ApplyFilterByIndex(Bitmap bitmap, int value){
         switch (value) {
             case 1:
-                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
+                shareImage=ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
+                return shareImage;
             case 2:
-                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.AVERAGE_BLUR, 9);
+                shareImage=ImageFilter.applyFilter(bitmap, ImageFilter.Filter.AVERAGE_BLUR, 9);
+                return shareImage;
             case 3:
-                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OIL,10);
+                shareImage=ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OIL,10);
+                return shareImage;
             case 4:
-                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.NEON,200, 50, 100);
+                shareImage=ImageFilter.applyFilter(bitmap, ImageFilter.Filter.NEON,200, 50, 100);
+                return shareImage;
             case 5:
-                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.BLOCK);
+                shareImage=ImageFilter.applyFilter(bitmap, ImageFilter.Filter.BLOCK);
+                return shareImage;
             default:
                 return bitmap;
         }
