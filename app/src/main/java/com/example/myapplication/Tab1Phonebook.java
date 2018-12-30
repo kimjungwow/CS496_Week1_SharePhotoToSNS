@@ -228,7 +228,7 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
             phones.close();
         }
         adapter = new Tab1ContactViewAdapter(getActivity().getApplicationContext(), contactModelArrayList);
-        if(adapter!=null){
+        if(!(adapter.isEmpty())){
         LV.setAdapter(adapter);}
         return;
     }
