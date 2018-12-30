@@ -99,7 +99,7 @@ public class ZoomActivity extends FragmentActivity {
 
     private void LoadFilterThumbnails(){
         // array for filter type names and thumbnails
-        String[] filterTypes = {"ORIGINAL", "GRAY", "BLUR", "OIL", "NEON", "BLOCK", "OLD", "LOMO", "HDR", "SOFTGLOW", "SKETCH"};
+        String[] filterTypes = {"ORIGINAL", "GRAY", "BLUR", "OIL", "NEON", "BLOCK"};
         ArrayList<FilteredThumbnail> thumbnails = new ArrayList<>();
 
         //resize mainImage to smaller thumbnails
@@ -155,16 +155,6 @@ public class ZoomActivity extends FragmentActivity {
                 return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.NEON,200, 50, 100);
             case 5:
                 return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.BLOCK);
-            case 6:
-                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OLD);
-            case 7:
-                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.LOMO);
-            case 8:
-                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.HDR);
-            case 9:
-                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.SOFT_GLOW);
-            case 10:
-                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.SKETCH);
             default:
                 return bitmap;
         }
