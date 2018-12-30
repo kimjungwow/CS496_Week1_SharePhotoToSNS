@@ -13,7 +13,7 @@
     <TextView
         android:id="@+id/filterName"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
         android:textSize="12dp"
         android:textAlignment="center"/>
 </LinearLayout>

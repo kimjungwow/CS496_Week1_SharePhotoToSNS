@@ -7,11 +7,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import net.alhazmy13.imagefilter.ImageFilter;
+
+import java.util.ArrayList;
 
 import static java.security.AccessController.getContext;
 
@@ -24,22 +28,20 @@ public class ZoomActivity extends FragmentActivity {
     // duration is ideal for subtle animations or animations that occur
     // very frequently.
     private int mShortAnimationDuration;
+    Bitmap mainImage;
 
     ImageView zoomview;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zoom);
-        final int[] img = {R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d, R.drawable.e, R.drawable.f, R.drawable.g, R.drawable.h,
-                R.drawable.i, R.drawable.j, R.drawable.k, R.drawable.l, R.drawable.m, R.drawable.n, R.drawable.o,
-                R.drawable.p, R.drawable.q, R.drawable.r, R.drawable.s, R.drawable.t, R.drawable.u, R.drawable.v
-        };
 
         // Hook up clicks on the thumbnail views.
         Intent intent = getIntent();
         zoomview = findViewById(R.id.expanded_image);
-
+        recyclerView = findViewById(R.id.filterThumbnails);
 
         final View fb = findViewById(R.id.filterbutton);
         fb.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +57,7 @@ public class ZoomActivity extends FragmentActivity {
 
         });
 
+        /* should change to save button
         final View thumb1View = findViewById(R.id.thumb_button_1);
         thumb1View.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +68,7 @@ public class ZoomActivity extends FragmentActivity {
                 onBackPressed(); // Go back to previous fragment!
             }
         });
+        */
 
         // Retrieve and cache the system's default "short" animation time.
         mShortAnimationDuration = getResources().getInteger(
@@ -76,8 +80,9 @@ public class ZoomActivity extends FragmentActivity {
         super.onResume();
         String imgPath = getIntent().getStringExtra("imagePath");
         if (imgPath != ""){
-            Bitmap img = BitmapFactory.decodeFile(imgPath);
-            zoomview.setImageBitmap(img);
+            mainImage = BitmapFactory.decodeFile(imgPath);
+            zoomview.setImageBitmap(mainImage);
+            LoadFilterThumbnails();
         }
         else {
             Toast.makeText(getApplicationContext(), "Cannot load image",Toast.LENGTH_LONG).show();
@@ -85,6 +90,53 @@ public class ZoomActivity extends FragmentActivity {
         }
     }
 
+    private void LoadFilterThumbnails(){
+        String[] filterTypes = {"GRAY", "BLUR", "OIL", "NEON", "BLOCK", "OLD", "LOMO", "HDR", "SOFTGLOW", "SKETCH"};
+        ArrayList<FilteredThumbnail> thumbnails = new ArrayList<>();
+        for (int index = 0; index < filterTypes.length; index++){
+            //filter images by type
+            int desiredWidth = 100;
+            int desiredHeight = mainImage.getHeight() * 100 / mainImage.getWidth();
+            Bitmap filteredImg = Bitmap.createScaledBitmap(ApplyFilterByIndex(mainImage, index), desiredWidth, desiredHeight, false);
+            //and save images and corresponding filters to thumbnails array
+            FilteredThumbnail thumbnail = new FilteredThumbnail();
+            thumbnail.setFilterType(filterTypes[index]);
+            thumbnail.setImgBP(filteredImg);
+            thumbnails.add(thumbnail);
+        }
+
+        //use adapter to put images in recyclerview
+        FilterThumbnailAdapter adapter = new FilterThumbnailAdapter(thumbnails);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    }
+
+    private Bitmap ApplyFilterByIndex(Bitmap bitmap, int value){
+        switch (value) {
+            case 0:
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
+            case 1:
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.AVERAGE_BLUR, 9);
+            case 2:
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OIL,10);
+            case 3:
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.NEON,200, 50, 100);
+            case 4:
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.BLOCK);
+            case 5:
+                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OLD);
+            case 6:
+                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.LOMO);
+            case 7:
+                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.HDR);
+            case 8:
+                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.SOFT_GLOW);
+            case 9:
+                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.SKETCH);
+            default:
+                return bitmap;
+        }
+    }
 }
 
 
