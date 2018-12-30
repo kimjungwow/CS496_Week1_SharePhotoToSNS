@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.cs496.myapplication;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

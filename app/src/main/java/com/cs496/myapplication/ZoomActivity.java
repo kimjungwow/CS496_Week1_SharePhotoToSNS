@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.cs496.myapplication;
 
 import android.animation.Animator;
 import android.content.Intent;

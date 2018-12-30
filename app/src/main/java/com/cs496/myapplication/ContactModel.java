@@ -1,8 +1,6 @@
-package com.example.myapplication;
+package com.cs496.myapplication;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 
 public class ContactModel{
     private String name, number;

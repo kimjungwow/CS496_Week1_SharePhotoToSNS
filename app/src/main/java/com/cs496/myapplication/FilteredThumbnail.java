@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.cs496.myapplication;
 
 import android.graphics.Bitmap;
 

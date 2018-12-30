@@ -1,34 +1,27 @@
-package com.example.myapplication;
+package com.cs496.myapplication;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v4.content.PermissionChecker;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 
 import net.alhazmy13.imagefilter.ImageFilter;
 
 import java.util.ArrayList;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 
 public class Tab3Etc extends Fragment {
     private View cameraButton;
@@ -43,7 +36,7 @@ public class Tab3Etc extends Fragment {
     int REQUEST_IMAGE_CAPTURE = 1;
     int REQUEST_GALLERY = 2;
 
-    private Bitmap mainImage;
+
     boolean writePermission;
     boolean readPermission;
     ImageAdapter adapter;
