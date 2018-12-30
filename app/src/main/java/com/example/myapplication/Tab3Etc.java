@@ -34,53 +34,6 @@ public class Tab3Etc extends Fragment {
         saveButton = rootView.findViewById(R.id.saveButton);
         newPicture = rootView.findViewById(R.id.newImage);
 
-        //open camera app
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
-
-        //open imagepicker
-        galleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-
-        });
-
-        //share main image
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-
-        });
-
-        //save image to gallery
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
-
         return rootView;
-    }
-
-    public int checkselfpermission(String permission) {
-        return PermissionChecker.checkSelfPermission(getContext(), permission);
-    }
-
-    public boolean WritePermissionCheck() {
-        if (checkselfpermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
-            if (checkselfpermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            } else {
-                return false;
-            }
-        }
     }
 }
