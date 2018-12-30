@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +16,9 @@ import android.widget.Toast;
 
 import net.alhazmy13.imagefilter.ImageFilter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import static java.security.AccessController.getContext;
+import java.util.Date;
 
 public class ZoomActivity extends FragmentActivity {
     // Hold a reference to the current animator,
@@ -32,6 +33,7 @@ public class ZoomActivity extends FragmentActivity {
 
     ImageView zoomview;
     RecyclerView recyclerView;
+    boolean writePermission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,24 +42,31 @@ public class ZoomActivity extends FragmentActivity {
 
         // Hook up clicks on the thumbnail views.
         Intent intent = getIntent();
+        writePermission = intent.getBooleanExtra("writePermission", false);
         zoomview = findViewById(R.id.expanded_image);
         recyclerView = findViewById(R.id.filterThumbnails);
 
-        final View fb = findViewById(R.id.filterbutton);
-        fb.setOnClickListener(new View.OnClickListener() {
+        //Save button gets current image in zoomview and save it to gallery
+        final View savebutton = findViewById(R.id.saveButton);
+        savebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                zoomview.invalidate();
-                BitmapDrawable drawable = (BitmapDrawable) zoomview.getDrawable();
-                Bitmap bitmap = drawable.getBitmap();
-                Bitmap filtered = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
+                if (writePermission){
+                    BitmapDrawable filteredDrawable = (BitmapDrawable) zoomview.getDrawable();
+                    Bitmap newBP = filteredDrawable.getBitmap();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                    String title = sdf.format(new Date());
+                    MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), newBP ,title, "description");
+                }
 
-                zoomview.setImageBitmap(filtered);
+                else {
+                    Toast.makeText(getApplicationContext(), "Cannot save image.", Toast.LENGTH_SHORT).show();
+                }
             }
 
         });
 
-        /* should change to save button
+        //go back to tab2
         final View thumb1View = findViewById(R.id.thumb_button_1);
         thumb1View.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +77,7 @@ public class ZoomActivity extends FragmentActivity {
                 onBackPressed(); // Go back to previous fragment!
             }
         });
-        */
+
 
         // Retrieve and cache the system's default "short" animation time.
         mShortAnimationDuration = getResources().getInteger(
@@ -78,7 +87,7 @@ public class ZoomActivity extends FragmentActivity {
     @Override
     public void onResume(){
         super.onResume();
-        String imgPath = getIntent().getStringExtra("imagePath");
+        final String imgPath = getIntent().getStringExtra("imagePath");
         if (imgPath != ""){
             mainImage = BitmapFactory.decodeFile(imgPath);
             zoomview.setImageBitmap(mainImage);
@@ -91,47 +100,65 @@ public class ZoomActivity extends FragmentActivity {
     }
 
     private void LoadFilterThumbnails(){
-        String[] filterTypes = {"GRAY", "BLUR", "OIL", "NEON", "BLOCK", "OLD", "LOMO", "HDR", "SOFTGLOW", "SKETCH"};
+        String[] filterTypes = {"ORIGINAL", "GRAY", "BLUR", "OIL", "NEON", "BLOCK", "OLD", "LOMO", "HDR", "SOFTGLOW", "SKETCH"};
         ArrayList<FilteredThumbnail> thumbnails = new ArrayList<>();
-        for (int index = 0; index < filterTypes.length; index++){
+        int desiredWidth = 100;
+        int desiredHeight = mainImage.getHeight() * 100 / mainImage.getWidth();
+        Bitmap thumbImage = Bitmap.createScaledBitmap(mainImage, desiredWidth, desiredHeight, false);
+        FilteredThumbnail original = new FilteredThumbnail();
+        original.setFilterType("ORIGINAL");
+        original.setImgBP(thumbImage);
+        original.setFilterTypeIndex(0);
+        thumbnails.add(original);
+        for (int index = 1; index < filterTypes.length; index++){
             //filter images by type
-            int desiredWidth = 100;
-            int desiredHeight = mainImage.getHeight() * 100 / mainImage.getWidth();
-            Bitmap filteredImg = Bitmap.createScaledBitmap(ApplyFilterByIndex(mainImage, index), desiredWidth, desiredHeight, false);
+            Bitmap filteredImg = ApplyFilterByIndex(thumbImage, index);
             //and save images and corresponding filters to thumbnails array
             FilteredThumbnail thumbnail = new FilteredThumbnail();
+            thumbnail.setFilterTypeIndex(index);
             thumbnail.setFilterType(filterTypes[index]);
             thumbnail.setImgBP(filteredImg);
             thumbnails.add(thumbnail);
         }
 
         //use adapter to put images in recyclerview
-        FilterThumbnailAdapter adapter = new FilterThumbnailAdapter(thumbnails);
+        FilterThumbnailAdapter adapter = new FilterThumbnailAdapter(thumbnails, new FilterThumbnailAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(FilteredThumbnail item) {
+                LoadPicture(item.getFilterTypeIndex());
+            }
+        });
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
+    private void LoadPicture(int index){
+        if (index == 0) zoomview.setImageBitmap(mainImage);
+        else zoomview.setImageBitmap(ApplyFilterByIndex(mainImage, index));
+        return;
+    }
+
     private Bitmap ApplyFilterByIndex(Bitmap bitmap, int value){
         switch (value) {
-            case 0:
-                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
             case 1:
-                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.AVERAGE_BLUR, 9);
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
             case 2:
-                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OIL,10);
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.AVERAGE_BLUR, 9);
             case 3:
-                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.NEON,200, 50, 100);
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OIL,10);
             case 4:
-                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.BLOCK);
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.NEON,200, 50, 100);
             case 5:
-                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OLD);
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.BLOCK);
             case 6:
-                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.LOMO);
+                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OLD);
             case 7:
-                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.HDR);
+                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.LOMO);
             case 8:
-                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.SOFT_GLOW);
+                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.HDR);
             case 9:
+                ImageFilter.applyFilter(bitmap, ImageFilter.Filter.SOFT_GLOW);
+            case 10:
                 ImageFilter.applyFilter(bitmap, ImageFilter.Filter.SKETCH);
             default:
                 return bitmap;

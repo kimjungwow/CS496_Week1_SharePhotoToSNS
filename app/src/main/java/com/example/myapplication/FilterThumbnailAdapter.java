@@ -11,6 +11,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class FilterThumbnailAdapter extends RecyclerView.Adapter<FilterThumbnailAdapter.ViewHolder>{
+    public interface OnItemClickListener {
+        void onItemClick(FilteredThumbnail item);
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView tvfilterName;
@@ -18,16 +21,25 @@ public class FilterThumbnailAdapter extends RecyclerView.Adapter<FilterThumbnail
 
         public ViewHolder(View itemView){
             super(itemView);
-
             tvfilterName = itemView.findViewById(R.id.filterName);
             ivfilterImg = itemView.findViewById(R.id.filterThumbnail);
+        }
+
+        public void bind(final FilteredThumbnail thumbnail, final OnItemClickListener listener){
+            itemView.setOnClickListener(new View.OnClickListener(){
+                @Override public void onClick(View v){
+                    listener.onItemClick(thumbnail);
+                }
+            });
         }
     }
 
     private ArrayList<FilteredThumbnail> thumbnails;
+    private final OnItemClickListener listener;
 
-    public FilterThumbnailAdapter(ArrayList<FilteredThumbnail> newThumbnails){
+    public FilterThumbnailAdapter(ArrayList<FilteredThumbnail> newThumbnails, OnItemClickListener listener){
         this.thumbnails = newThumbnails;
+        this.listener = listener;
     }
 
     @Override
@@ -46,6 +58,7 @@ public class FilterThumbnailAdapter extends RecyclerView.Adapter<FilterThumbnail
     // Involves populating data into the item through holder
     @Override
     public void onBindViewHolder(FilterThumbnailAdapter.ViewHolder viewHolder, int position) {
+        viewHolder.bind(thumbnails.get(position), listener);
         // Get the data model based on position
         FilteredThumbnail thumbnail = thumbnails.get(position);
 

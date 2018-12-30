@@ -26,6 +26,7 @@ public class Tab2Images extends Fragment {
     EditText editText;
     GridView gridview;
     ImageAdapter adapter;
+    boolean writePermission;
     final int REQ_CODE_SELECT_IMAGE = 100;
 
     private static int RESULT_LOAD_IMAGE = 1;
@@ -42,14 +43,15 @@ public class Tab2Images extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        if(Permissioncheck()) loadPictures();
-
+        if(ReadPermissioncheck()) loadPictures();
+        writePermission = WritePermissioncheck();
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (Permissioncheck()) {
+                if (ReadPermissioncheck()) {
                     Intent intent = new Intent(getActivity().getApplicationContext(), ZoomActivity.class);
                     intent.putExtra("imagePath", adapter.getItem(position));
+                    intent.putExtra("writePermission", writePermission);
                     startActivity(intent);
                 }
             }
@@ -91,7 +93,7 @@ public class Tab2Images extends Fragment {
         return PermissionChecker.checkSelfPermission(getContext(), permission);
     }
 
-    public boolean Permissioncheck() {
+    public boolean ReadPermissioncheck() {
         if (checkselfpermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
@@ -104,5 +106,17 @@ public class Tab2Images extends Fragment {
         }
     }
 
+    public boolean WritePermissioncheck() {
+        if (checkselfpermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+            if (checkselfpermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 }
 
