@@ -2,33 +2,84 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Main2Activity"
     tools:layout_editor_absoluteY="81dp">
 
-    <TextView
-        android:id="@+id/section_label"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Tab3 etc text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="5dp">
+        <Button
+            android:id="@+id/cameraButton"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Camera"
+            android:textSize="12sp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="5dp"/>
+        <Button
+            android:id="@+id/galleryButton"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Gallery"
+            android:textSize="12sp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="5dp"/>
+        <Button
+            android:id="@+id/shareButton"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Share"
+            android:textSize = "12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="5dp"/>
 
-    <Switch
-        android:id="@+id/switch2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Switch"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/newPicSaveButton"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:textSize = "12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="5dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="70dp">
+
+        <ImageView
+            android:id="@+id/newImage"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_gravity="center"
+            android:baselineAligned="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/default_empty_image" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id = "@+id/newPicFilterThumbnails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop = "30dp">
+
+
+        </android.support.v7.widget.RecyclerView>
+
+
+    </LinearLayout>
+
 
 </android.support.constraint.ConstraintLayout>
