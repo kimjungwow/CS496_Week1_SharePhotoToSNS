@@ -22,9 +22,13 @@ import android.support.v4.content.PermissionChecker;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -56,8 +60,13 @@ public class Tab3Etc extends Fragment {
     private View cameraButton;
     private View galleryButton;
     private View shareButton;
-    //    ShareButton shareButton;
     private View saveButton;
+    private View shareok;
+    private RadioGroup snsradio;
+
+    private View back;
+    private int groupa, groupb;
+
 
 
     GridView gridview;
@@ -68,6 +77,7 @@ public class Tab3Etc extends Fragment {
 
     int REQUEST_IMAGE_CAPTURE = 1;
     int REQUEST_GALLERY = 2;
+    int REQUEST_SNS = 3;
     String type = "image/*";
     String filename = "/myPhoto.jpg";
     String mediaPath = Environment.getExternalStorageDirectory() + filename;
@@ -96,10 +106,6 @@ public class Tab3Etc extends Fragment {
                 shareDialog.show(content);
 
             }
-//            shareContent = new ShareMediaContent.Builder()
-//                    .addMedium(sharePhoto)
-//                    .build();
-//            shareButton.setShareContent(shareContent);
         }
 
         @Override
@@ -130,85 +136,21 @@ public class Tab3Etc extends Fragment {
         galleryButton = rootView.findViewById(R.id.galleryButton);
         shareButton = rootView.findViewById(R.id.shareButton);
 
-        saveButton = rootView.findViewById(R.id.saveButton);
+        saveButton = rootView.findViewById(R.id.newPicSaveButton);
         newPicture = rootView.findViewById(R.id.newImage);
         recyclerView = rootView.findViewById(R.id.newPicFilterThumbnails);
+        shareok = rootView.findViewById(R.id.shareok);
+        snsradio = rootView.findViewById(R.id.snsradiogroup);
+        back = rootView.findViewById(R.id.back);
+
+
         mainImage = BitmapFactory.decodeResource(getResources(), R.drawable.default_empty_image);
 
 
         shareButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(Intent.ACTION_SEND);
-//                intent.setType("image/png");
-//                Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), shareImage);
-//                intent.putExtra(Intent.EXTRA_STREAM, bitmapuri);
-//                intent.setPackage("com.kakao.talk");
-//                startActivity(intent);
-
-
-//                /* INSTAGRAM */
-//                /* INSTAGRAM */
-//
-//                Intent instagramshare = new Intent(Intent.ACTION_SEND);
-//                instagramshare.setType("image/*");
-//                Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), shareImage);
-//                try {
-//                    instagramshare.putExtra(Intent.EXTRA_STREAM, bitmapuri);
-//
-//                    instagramshare.putExtra(Intent.EXTRA_TEXT, "텍스트는 지원하지 않음!");
-//                    instagramshare.setPackage("com.instagram.android");
-//                    startActivity(instagramshare);
-//                } catch (ActivityNotFoundException e) {
-//                    Toast.makeText(getActivity().getApplicationContext(), "인스타그램이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//                /* INSTAGRAM */
-//                /* INSTAGRAM */
-
-
-
-
-                /* FACEBOOK */
-                /* FACEBOOK */
-
-                //Create callback
-                shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-                    @Override
-                    public void onSuccess(Sharer.Result result) {
-                        Toast.makeText(getActivity().getApplicationContext(), "Share Successful!", Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Toast.makeText(getActivity().getApplicationContext(), "Share cancel!", Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    @Override
-                    public void onError(FacebookException error) {
-                        Toast.makeText(getActivity().getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-
-                Bitmap tempimage = ((BitmapDrawable) newPicture.getDrawable()).getBitmap();
-                Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), tempimage);
-//
-                //We will fetch photo from link and conver to bitmap
-                Picasso.with(getActivity().getBaseContext())
-//                        .load("https://en.wikipedia.org/wiki/Batman#/media/File:Batman_DC_Comics.png")
-                        .load(bitmapuri)
-                        .into(target);
-
-                /* FACEBOOK */
-                /* FACEBOOK */
-
-
+                change_visibility(1);
             }
         });
 
@@ -238,8 +180,129 @@ public class Tab3Etc extends Fragment {
                 shareImage = mainImage;
 
 
+
             }
         });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                change_visibility(0);
+            }
+        });
+
+        shareok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Toast.makeText(getActivity().getApplicationContext(),"da",1).show();
+
+                    int radioButtonID = snsradio.getCheckedRadioButtonId();
+                    View radioButton = snsradio.findViewById(radioButtonID);
+                    int idx = snsradio.indexOfChild(radioButton);
+
+                    switch (idx) {
+                        case 0:
+
+                            /* FACEBOOK */
+                            /* FACEBOOK */
+
+                            //Create callback
+                            shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+                                @Override
+                                public void onSuccess(Sharer.Result result) {
+                                    Toast.makeText(getActivity().getApplicationContext(), "Share Successful!", Toast.LENGTH_SHORT).show();
+
+                                }
+
+                                @Override
+                                public void onCancel() {
+                                    Toast.makeText(getActivity().getApplicationContext(), "Share cancel!", Toast.LENGTH_SHORT).show();
+
+                                }
+
+                                @Override
+                                public void onError(FacebookException error) {
+                                    Toast.makeText(getActivity().getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+
+                            Bitmap tempimage = ((BitmapDrawable) newPicture.getDrawable()).getBitmap();
+                            Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), tempimage);
+//
+                            //We will fetch photo from link and conver to bitmap
+                            Picasso.with(getActivity().getBaseContext())
+//                        .load("https://en.wikipedia.org/wiki/Batman#/media/File:Batman_DC_Comics.png")
+                                    .load(bitmapuri)
+                                    .into(target);
+
+                            /* FACEBOOK */
+                            /* FACEBOOK */
+                            break;
+                        case 1:
+                            /* INSTAGRAM */
+                            /* INSTAGRAM */
+
+                            Intent instagramshare = new Intent(Intent.ACTION_SEND);
+                            instagramshare.setType("image/*");
+//                            bitmapuri = getImageUri(getActivity().getApplicationContext(), shareImage);
+                            Bitmap tempimage2 = ((BitmapDrawable) newPicture.getDrawable()).getBitmap();
+                            bitmapuri = getImageUri(getActivity().getApplicationContext(), tempimage2);
+
+                            try {
+                                instagramshare.putExtra(Intent.EXTRA_STREAM, bitmapuri);
+
+                                instagramshare.putExtra(Intent.EXTRA_TEXT, "텍스트는 지원하지 않음!");
+                                instagramshare.setPackage("com.instagram.android");
+                                startActivity(instagramshare);
+                            } catch (ActivityNotFoundException e) {
+                                Toast.makeText(getActivity().getApplicationContext(), "인스타그램이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            /* INSTAGRAM */
+                            /* INSTAGRAM */
+                            break;
+                        case 2:
+
+                            /* KAKAOTALK*/
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("image/png");
+//                            bitmapuri = getImageUri(getActivity().getApplicationContext(), shareImage);
+                            Bitmap tempimage3 = ((BitmapDrawable) newPicture.getDrawable()).getBitmap();
+                            bitmapuri = getImageUri(getActivity().getApplicationContext(), tempimage3);
+
+                            intent.putExtra(Intent.EXTRA_STREAM, bitmapuri);
+                            intent.setPackage("com.kakao.talk");
+                            startActivity(intent);
+                            break;
+                        default:
+                            break;
+
+
+                    }
+
+
+                    change_visibility(0);
+//                    cameraButton.setVisibility(View.VISIBLE);
+//                    galleryButton.setVisibility(View.VISIBLE);
+//                    shareButton.setVisibility(View.VISIBLE);
+//
+//                    snsradio.setVisibility(View.GONE);
+//
+//                    saveButton.setVisibility(View.VISIBLE);
+//                    shareok.setVisibility(View.GONE);
+//                    back.setVisibility(View.GONE);
+
+
+
+
+            }
+        });
+
+
         return rootView;
     }
 
@@ -261,6 +324,8 @@ public class Tab3Etc extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
+
+
             if (mainImage != null) {
                 mainImage.recycle();
             }
@@ -286,6 +351,7 @@ public class Tab3Etc extends Fragment {
             }
 
         }
+
 
 
     }
@@ -338,6 +404,7 @@ public class Tab3Etc extends Fragment {
 //        else
 
         newPicture.setImageBitmap(ApplyFilterByIndex(mainImage, index));
+        shareImage = ApplyFilterByIndex(mainImage, index);
         return;
     }
 
@@ -382,6 +449,31 @@ public class Tab3Etc extends Fragment {
             } else {
                 return false;
             }
+        }
+    }
+
+    public void change_visibility(int input) {
+        if (input==0) {
+            groupa = View.VISIBLE;
+            groupb = View.GONE;
+            cameraButton.setVisibility(groupa);
+            galleryButton.setVisibility(groupa);
+            shareButton.setVisibility(groupa);
+            saveButton.setVisibility(groupa);
+            snsradio.setVisibility(groupb);
+            shareok.setVisibility(groupb);
+            back.setVisibility(groupb);
+
+        } else {
+            groupa = View.GONE;
+            groupb = View.VISIBLE;
+            cameraButton.setVisibility(groupa);
+            galleryButton.setVisibility(groupa);
+            shareButton.setVisibility(groupa);
+            saveButton.setVisibility(groupa);
+            snsradio.setVisibility(groupb);
+            shareok.setVisibility(groupb);
+            back.setVisibility(groupb);
         }
     }
 
