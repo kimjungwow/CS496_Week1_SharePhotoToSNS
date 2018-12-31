@@ -38,6 +38,9 @@ public class Main2Activity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    public static String imageStoragePath;
+    // key to store image path in savedInstance state
+    public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +165,28 @@ public class Main2Activity extends AppCompatActivity {
             return null;
         }
 
+    }
+
+    /**
+     * Saving stored image path to saved instance state
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // save file url in bundle as it will be null on screen orientation
+        // changes
+        outState.putString(KEY_IMAGE_STORAGE_PATH, imageStoragePath);
+    }
+
+    /**
+     * Restoring image path from saved instance state
+     */
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // get the file url
+        imageStoragePath = savedInstanceState.getString(KEY_IMAGE_STORAGE_PATH);
     }
 }
 

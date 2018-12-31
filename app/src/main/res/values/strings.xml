@@ -15,6 +15,9 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="facebook_app_id">207997280147786</string>
     <string name="facebook_login_protocol_scheme">fb207997280147786</string>
+    <string name="newImage">Image and Video preview will appear here</string>
+    <string name="preview_description">Image and Video preview will appear here</string>
+    <string name="btn_take_picture">Take Picture</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

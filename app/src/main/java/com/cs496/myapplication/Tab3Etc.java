@@ -6,16 +6,21 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Camera;
 import android.graphics.drawable.Drawable;
 import android.media.FaceDetector;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v4.content.PermissionChecker;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,14 +47,19 @@ import com.squareup.picasso.Target;
 import net.alhazmy13.imagefilter.ImageFilter;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class Tab3Etc extends Fragment {
     private View cameraButton;
     private View galleryButton;
     private View shareButton;
-//    ShareButton shareButton;
     private View saveButton;
 
     GridView gridview;
@@ -59,7 +69,6 @@ public class Tab3Etc extends Fragment {
 
     int REQUEST_IMAGE_CAPTURE = 1;
     int REQUEST_GALLERY = 2;
-
 
     boolean writePermission;
     boolean readPermission;
@@ -99,23 +108,20 @@ public class Tab3Etc extends Fragment {
         }
     };
 
-
+    public void setMainImage(Bitmap newImage){
+        mainImage = newImage;
+        shareImage = mainImage;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
 
         View rootView = inflater.inflate(R.layout.tab3etc, container, false);
 
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(getActivity());
-
-
-
-
 
         cameraButton = rootView.findViewById(R.id.cameraButton);
         galleryButton = rootView.findViewById(R.id.galleryButton);
@@ -126,6 +132,14 @@ public class Tab3Etc extends Fragment {
         recyclerView = rootView.findViewById(R.id.newPicFilterThumbnails);
         mainImage =  BitmapFactory.decodeResource(getResources(), R.drawable.default_empty_image);
 
+        //ask for camera permission
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            cameraButton.setEnabled(false);
+            ActivityCompat.requestPermissions(getActivity(), new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                cameraButton.setEnabled(true);
+            }
+        }
 
         shareButton.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -159,10 +173,6 @@ public class Tab3Etc extends Fragment {
 //                        .load("https://en.wikipedia.org/wiki/Batman#/media/File:Batman_DC_Comics.png")
                         .load(bitmapuri)
                         .into(target);
-
-
-
-
             }
         });
 
@@ -170,33 +180,22 @@ public class Tab3Etc extends Fragment {
         cameraButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Check if phone has camera
-                if (getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-                    //Check for camera permission
-                    //open camera app
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
-                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                    }
-                }
+                Intent intent = new Intent(getActivity(), CameraActivity.class);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
             }
         });
+
 
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
+                Intent intent = new Intent(getActivity(), CameraActivity.class);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_GALLERY);
-
-
-
             }
         });
         return rootView;
     }
-
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -214,15 +213,34 @@ public class Tab3Etc extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
-            if (mainImage != null){
-                mainImage.recycle();
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (resultCode ==  getActivity().RESULT_OK) {
+                try {
+                    String path = data.getExtras().getString("picPath");
+                    Log.d("sendPic>>>>>", "received path: " + path);
+                    Bitmap bp = CameraUtils.optimizeBitmap(5, path);
+
+                    if (bp != null) {
+                        Log.d("sendPic>>>>>", "bp not null");
+                        mainImage = bp;
+                        shareImage = mainImage;
+                        newPicture.setImageBitmap(mainImage);
+                    }
+                } catch (Exception e) {
+                    Log.d("sendPic>>>>>", "cannot get path");
+                    e.printStackTrace();
+                }
+            } else if (resultCode ==  getActivity().RESULT_CANCELED) {
+                // user cancelled Image capture
+                Toast.makeText(getContext(),
+                        "User cancelled image capture", Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                // failed to capture image
+                Toast.makeText(getContext(),
+                        "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
+                        .show();
             }
-            Bundle extras = data.getExtras();
-            mainImage = (Bitmap) extras.get("data");
-            shareImage=mainImage;
-            newPicture.setImageBitmap(mainImage);
-            LoadFilterThumbnails();
         }
         else if (requestCode == REQUEST_GALLERY && resultCode == getActivity().RESULT_OK) {
             try {
@@ -238,8 +256,6 @@ public class Tab3Etc extends Fragment {
             }
 
         }
-
-
     }
 
     private void LoadFilterThumbnails(){
@@ -251,7 +267,6 @@ public class Tab3Etc extends Fragment {
         int desiredWidth = 100;
         int desiredHeight = mainImage.getHeight() * 100 / mainImage.getWidth();
         Bitmap thumbImage = Bitmap.createScaledBitmap(mainImage, desiredWidth, desiredHeight, false);
-
         //make thumbnails and add it to thumnails ArrayList
         FilteredThumbnail original = new FilteredThumbnail();
         original.setFilterType("ORIGINAL");
@@ -276,7 +291,6 @@ public class Tab3Etc extends Fragment {
                 LoadPicture(item.getFilterTypeIndex());
             }
         });
-
         //use adapter to put images in recyclerview
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
