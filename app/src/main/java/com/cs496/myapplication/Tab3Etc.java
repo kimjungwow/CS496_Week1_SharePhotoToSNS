@@ -75,6 +75,7 @@ public class Tab3Etc extends Fragment {
     private View saveButton;
     private View shareok;
     private RadioGroup snsradio;
+    private View rotateButton;
 
     private View back;
     private int groupa, groupb;
@@ -145,6 +146,7 @@ public class Tab3Etc extends Fragment {
         cameraButton = rootView.findViewById(R.id.cameraButton);
         galleryButton = rootView.findViewById(R.id.galleryButton);
         shareButton = rootView.findViewById(R.id.shareButton);
+        rotateButton = rootView.findViewById(R.id.rotateButton);
 
         saveButton = rootView.findViewById(R.id.newPicSaveButton);
         newPicture = rootView.findViewById(R.id.newImage);
@@ -315,6 +317,12 @@ public class Tab3Etc extends Fragment {
 
         });
 
+        rotateButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                newPicture.setRotation(newPicture.getRotation() - 90);
+            }
+        });
 
         return rootView;
     }
