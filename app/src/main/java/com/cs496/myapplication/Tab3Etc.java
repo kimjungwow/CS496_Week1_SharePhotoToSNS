@@ -286,18 +286,6 @@ public class Tab3Etc extends Fragment {
 
 
                     change_visibility(0);
-//                    cameraButton.setVisibility(View.VISIBLE);
-//                    galleryButton.setVisibility(View.VISIBLE);
-//                    shareButton.setVisibility(View.VISIBLE);
-//
-//                    snsradio.setVisibility(View.GONE);
-//
-//                    saveButton.setVisibility(View.VISIBLE);
-//                    shareok.setVisibility(View.GONE);
-//                    back.setVisibility(View.GONE);
-
-
-
 
             }
         });
@@ -397,12 +385,6 @@ public class Tab3Etc extends Fragment {
     }
 
     private void LoadPicture(int index) {
-//        if (index == 0) {newPicture.setImageBitmap(mainImage);
-//
-//        shareImage=mainImage;
-//        }
-//        else
-
         newPicture.setImageBitmap(ApplyFilterByIndex(mainImage, index));
         shareImage = ApplyFilterByIndex(mainImage, index);
         return;
