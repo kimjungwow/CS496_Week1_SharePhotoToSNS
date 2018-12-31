@@ -1,6 +1,7 @@
 package com.cs496.myapplication;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.media.FaceDetector;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -59,6 +61,10 @@ public class Tab3Etc extends Fragment {
 
     int REQUEST_IMAGE_CAPTURE = 1;
     int REQUEST_GALLERY = 2;
+    String type = "image/*";
+    String filename = "/myPhoto.jpg";
+    String mediaPath = Environment.getExternalStorageDirectory() + filename;
+
 
 
     boolean writePermission;
@@ -127,40 +133,77 @@ public class Tab3Etc extends Fragment {
         mainImage =  BitmapFactory.decodeResource(getResources(), R.drawable.default_empty_image);
 
 
+//        saveButton.setOnClickListener(new Button.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//
+//            }
+//        });
+
         shareButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                //Create callback
-                shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-                    @Override
-                    public void onSuccess(Sharer.Result result) {
-                        Toast.makeText(getActivity().getApplicationContext(), "Share Successful!", Toast.LENGTH_SHORT).show();
+                /* INSTAGRAM */
+                /* INSTAGRAM */
 
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Toast.makeText(getActivity().getApplicationContext(), "Share cancel!", Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    @Override
-                    public void onError(FacebookException error) {
-                        Toast.makeText(getActivity().getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-
+                Intent instagramshare = new Intent(Intent.ACTION_SEND);
+                instagramshare.setType("image/*");
                 Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), shareImage);
+                try {
+                    instagramshare.putExtra(Intent.EXTRA_STREAM, bitmapuri);
+
+                    instagramshare.putExtra(Intent.EXTRA_TEXT, "텍스트는 지원하지 않음!");
+                    instagramshare.setPackage("com.instagram.android");
+                    startActivity(instagramshare);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(getActivity().getApplicationContext(), "인스타그램이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                /* INSTAGRAM */
+                /* INSTAGRAM */
+
+
+
+
+                /* FACEBOOK */
+                /* FACEBOOK */
+
+//                //Create callback
+//                shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+//                    @Override
+//                    public void onSuccess(Sharer.Result result) {
+//                        Toast.makeText(getActivity().getApplicationContext(), "Share Successful!", Toast.LENGTH_SHORT).show();
 //
-                //We will fetch photo from link and conver to bitmap
-                Picasso.with(getActivity().getBaseContext())
-//                        .load("https://en.wikipedia.org/wiki/Batman#/media/File:Batman_DC_Comics.png")
-                        .load(bitmapuri)
-                        .into(target);
-
-
+//                    }
+//
+//                    @Override
+//                    public void onCancel() {
+//                        Toast.makeText(getActivity().getApplicationContext(), "Share cancel!", Toast.LENGTH_SHORT).show();
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(FacebookException error) {
+//                        Toast.makeText(getActivity().getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                });
+//
+//                Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), shareImage);
+////
+//                //We will fetch photo from link and conver to bitmap
+//                Picasso.with(getActivity().getBaseContext())
+////                        .load("https://en.wikipedia.org/wiki/Batman#/media/File:Batman_DC_Comics.png")
+//                        .load(bitmapuri)
+//                        .into(target);
+//
+                /* FACEBOOK */
+                /* FACEBOOK */
 
 
             }
