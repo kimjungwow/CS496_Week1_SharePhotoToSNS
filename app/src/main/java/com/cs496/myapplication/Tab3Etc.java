@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.FaceDetector;
 import android.net.Uri;
@@ -38,8 +39,12 @@ import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
+import com.kakao.kakaotalk.callback.TalkResponseCallback;
+import com.kakao.network.ErrorResult;
+import com.kakao.util.helper.log.Logger;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
 
 import net.alhazmy13.imagefilter.ImageFilter;
 
@@ -51,12 +56,14 @@ public class Tab3Etc extends Fragment {
     private View cameraButton;
     private View galleryButton;
     private View shareButton;
-//    ShareButton shareButton;
+    //    ShareButton shareButton;
     private View saveButton;
+
 
     GridView gridview;
     private ImageView newPicture;
-    private Bitmap mainImage,shareImage;
+    private Bitmap mainImage;
+    private Bitmap shareImage;
     private RecyclerView recyclerView;
 
     int REQUEST_IMAGE_CAPTURE = 1;
@@ -64,7 +71,6 @@ public class Tab3Etc extends Fragment {
     String type = "image/*";
     String filename = "/myPhoto.jpg";
     String mediaPath = Environment.getExternalStorageDirectory() + filename;
-
 
 
     boolean writePermission;
@@ -95,10 +101,12 @@ public class Tab3Etc extends Fragment {
 //                    .build();
 //            shareButton.setShareContent(shareContent);
         }
+
         @Override
         public void onBitmapFailed(Drawable errorDrawable) {
 
         }
+
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {
 
@@ -106,11 +114,9 @@ public class Tab3Etc extends Fragment {
     };
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
 
 
         View rootView = inflater.inflate(R.layout.tab3etc, container, false);
@@ -120,9 +126,6 @@ public class Tab3Etc extends Fragment {
         shareDialog = new ShareDialog(getActivity());
 
 
-
-
-
         cameraButton = rootView.findViewById(R.id.cameraButton);
         galleryButton = rootView.findViewById(R.id.galleryButton);
         shareButton = rootView.findViewById(R.id.shareButton);
@@ -130,78 +133,78 @@ public class Tab3Etc extends Fragment {
         saveButton = rootView.findViewById(R.id.saveButton);
         newPicture = rootView.findViewById(R.id.newImage);
         recyclerView = rootView.findViewById(R.id.newPicFilterThumbnails);
-        mainImage =  BitmapFactory.decodeResource(getResources(), R.drawable.default_empty_image);
+        mainImage = BitmapFactory.decodeResource(getResources(), R.drawable.default_empty_image);
 
-
-//        saveButton.setOnClickListener(new Button.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//
-//            }
-//        });
 
         shareButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                /* INSTAGRAM */
-                /* INSTAGRAM */
-
-                Intent instagramshare = new Intent(Intent.ACTION_SEND);
-                instagramshare.setType("image/*");
-                Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), shareImage);
-                try {
-                    instagramshare.putExtra(Intent.EXTRA_STREAM, bitmapuri);
-
-                    instagramshare.putExtra(Intent.EXTRA_TEXT, "텍스트는 지원하지 않음!");
-                    instagramshare.setPackage("com.instagram.android");
-                    startActivity(instagramshare);
-                } catch (ActivityNotFoundException e) {
-                    Toast.makeText(getActivity().getApplicationContext(), "인스타그램이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                /* INSTAGRAM */
-                /* INSTAGRAM */
-
-
-
-
-                /* FACEBOOK */
-                /* FACEBOOK */
-
-//                //Create callback
-//                shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-//                    @Override
-//                    public void onSuccess(Sharer.Result result) {
-//                        Toast.makeText(getActivity().getApplicationContext(), "Share Successful!", Toast.LENGTH_SHORT).show();
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancel() {
-//                        Toast.makeText(getActivity().getApplicationContext(), "Share cancel!", Toast.LENGTH_SHORT).show();
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(FacebookException error) {
-//                        Toast.makeText(getActivity().getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-//
-//                    }
-//                });
-//
+//                Intent intent = new Intent(Intent.ACTION_SEND);
+//                intent.setType("image/png");
 //                Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), shareImage);
-////
-//                //We will fetch photo from link and conver to bitmap
-//                Picasso.with(getActivity().getBaseContext())
-////                        .load("https://en.wikipedia.org/wiki/Batman#/media/File:Batman_DC_Comics.png")
-//                        .load(bitmapuri)
-//                        .into(target);
+//                intent.putExtra(Intent.EXTRA_STREAM, bitmapuri);
+//                intent.setPackage("com.kakao.talk");
+//                startActivity(intent);
+
+
+//                /* INSTAGRAM */
+//                /* INSTAGRAM */
 //
+//                Intent instagramshare = new Intent(Intent.ACTION_SEND);
+//                instagramshare.setType("image/*");
+//                Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), shareImage);
+//                try {
+//                    instagramshare.putExtra(Intent.EXTRA_STREAM, bitmapuri);
+//
+//                    instagramshare.putExtra(Intent.EXTRA_TEXT, "텍스트는 지원하지 않음!");
+//                    instagramshare.setPackage("com.instagram.android");
+//                    startActivity(instagramshare);
+//                } catch (ActivityNotFoundException e) {
+//                    Toast.makeText(getActivity().getApplicationContext(), "인스타그램이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//                /* INSTAGRAM */
+//                /* INSTAGRAM */
+
+
+
+
+                /* FACEBOOK */
+                /* FACEBOOK */
+
+                //Create callback
+                shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+                    @Override
+                    public void onSuccess(Sharer.Result result) {
+                        Toast.makeText(getActivity().getApplicationContext(), "Share Successful!", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(getActivity().getApplicationContext(), "Share cancel!", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        Toast.makeText(getActivity().getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+                Bitmap tempimage = ((BitmapDrawable) newPicture.getDrawable()).getBitmap();
+                Uri bitmapuri = getImageUri(getActivity().getApplicationContext(), tempimage);
+//
+                //We will fetch photo from link and conver to bitmap
+                Picasso.with(getActivity().getBaseContext())
+//                        .load("https://en.wikipedia.org/wiki/Batman#/media/File:Batman_DC_Comics.png")
+                        .load(bitmapuri)
+                        .into(target);
+
                 /* FACEBOOK */
                 /* FACEBOOK */
 
@@ -232,7 +235,7 @@ public class Tab3Etc extends Fragment {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_GALLERY);
-
+                shareImage = mainImage;
 
 
             }
@@ -249,7 +252,7 @@ public class Tab3Etc extends Fragment {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         LoadFilterThumbnails();
     }
@@ -258,24 +261,26 @@ public class Tab3Etc extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
-            if (mainImage != null){
+            if (mainImage != null) {
                 mainImage.recycle();
             }
             Bundle extras = data.getExtras();
             mainImage = (Bitmap) extras.get("data");
-            shareImage=mainImage;
+            shareImage = mainImage;
             newPicture.setImageBitmap(mainImage);
             LoadFilterThumbnails();
-        }
-        else if (requestCode == REQUEST_GALLERY && resultCode == getActivity().RESULT_OK) {
+        } else if (requestCode == REQUEST_GALLERY && resultCode == getActivity().RESULT_OK) {
             try {
                 InputStream is = getActivity().getContentResolver().openInputStream(data.getData());
                 mainImage = BitmapFactory.decodeStream(is);
-                shareImage=mainImage;
+
                 is.close();
                 if (mainImage != null) {
-                    newPicture.setImageBitmap(mainImage);
+                    shareImage = mainImage;
+                    newPicture.setImageBitmap(shareImage);
                 }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -285,7 +290,7 @@ public class Tab3Etc extends Fragment {
 
     }
 
-    private void LoadFilterThumbnails(){
+    private void LoadFilterThumbnails() {
         // array for filter type names and thumbnails
         String[] filterTypes = {"ORIGINAL", "GRAY", "BLUR", "OIL", "NEON", "BLOCK"};
         ArrayList<FilteredThumbnail> thumbnails = new ArrayList<>();
@@ -301,7 +306,7 @@ public class Tab3Etc extends Fragment {
         original.setImgBP(thumbImage);
         original.setFilterTypeIndex(0);
         thumbnails.add(original);
-        for (int index = 1; index < filterTypes.length; index++){
+        for (int index = 1; index < filterTypes.length; index++) {
             //filter images by type
             Bitmap filteredImg = ApplyFilterByIndex(thumbImage, index);
             //and save images and corresponding filters to thumbnails array
@@ -325,28 +330,37 @@ public class Tab3Etc extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
-    private void LoadPicture(int index){
-        if (index == 0) newPicture.setImageBitmap(mainImage);
-        else newPicture.setImageBitmap(ApplyFilterByIndex(mainImage, index));
+    private void LoadPicture(int index) {
+//        if (index == 0) {newPicture.setImageBitmap(mainImage);
+//
+//        shareImage=mainImage;
+//        }
+//        else
+
+        newPicture.setImageBitmap(ApplyFilterByIndex(mainImage, index));
         return;
     }
 
-    private Bitmap ApplyFilterByIndex(Bitmap bitmap, int value){
+    private Bitmap ApplyFilterByIndex(Bitmap bitmap, int value) {
         switch (value) {
+            case 0:
+
+                shareImage = mainImage;
+                return shareImage;
             case 1:
-                shareImage=ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
+                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
                 return shareImage;
             case 2:
-                shareImage=ImageFilter.applyFilter(bitmap, ImageFilter.Filter.AVERAGE_BLUR, 9);
+                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.AVERAGE_BLUR, 9);
                 return shareImage;
             case 3:
-                shareImage=ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OIL,10);
+                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OIL, 10);
                 return shareImage;
             case 4:
-                shareImage=ImageFilter.applyFilter(bitmap, ImageFilter.Filter.NEON,200, 50, 100);
+                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.NEON, 200, 50, 100);
                 return shareImage;
             case 5:
-                shareImage=ImageFilter.applyFilter(bitmap, ImageFilter.Filter.BLOCK);
+                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.BLOCK);
                 return shareImage;
             default:
                 return bitmap;
