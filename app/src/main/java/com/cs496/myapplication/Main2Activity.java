@@ -19,10 +19,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Main2Activity extends AppCompatActivity {
+
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
