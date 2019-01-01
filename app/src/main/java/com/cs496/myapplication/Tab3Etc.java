@@ -354,6 +354,7 @@ public class Tab3Etc extends Fragment {
                     Bitmap bp = CameraUtils.optimizeBitmap(5, path);
 
                     if (bp != null) {
+                        bp = ImageRotator.rotateImage(path, bp);
                         mainImage = bp;
                         shareImage = mainImage;
                         newPicture.setImageBitmap(mainImage);
