@@ -396,7 +396,7 @@ public class Tab3Etc extends Fragment {
 
     private void LoadFilterThumbnails() {
         // array for filter type names and thumbnails
-        String[] filterTypes = {"ORIGINAL", "GRAY", "BLUR", "OIL", "NEON", "BLOCK"};
+        String[] filterTypes = {"ORIGINAL", "GRAY", "BLUR", "OIL", "NEON", "BLOCK", "OLD", "SHARPEN", "LOMO","HDR", "SOFTGLOW"};
         ArrayList<FilteredThumbnail> thumbnails = new ArrayList<>();
 
         //resize mainImage to smaller thumbnails
@@ -438,30 +438,32 @@ public class Tab3Etc extends Fragment {
         return;
     }
 
-    private Bitmap ApplyFilterByIndex(Bitmap bitmap, int value) {
-        int dstHeight = 280;
+    private Bitmap ApplyFilterByIndex(Bitmap bitmap, int value){
+        int dstHeight = 400;
         int dstWidth = bitmap.getWidth() * dstHeight / bitmap.getHeight();
         bitmap = Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, false);
+        // "OLD", "SHARPEN", "LOMO","HDR"
         switch (value) {
-            case 0:
-
-                shareImage = mainImage;
-                return shareImage;
             case 1:
-                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
-                return shareImage;
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
             case 2:
-                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.AVERAGE_BLUR, 2);
-                return shareImage;
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.AVERAGE_BLUR, 9);
             case 3:
-                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OIL, 3);
-                return shareImage;
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OIL,10);
             case 4:
-                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.NEON, 200, 50, 100);
-                return shareImage;
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.NEON,200, 50, 100);
             case 5:
-                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.BLOCK);
-                return shareImage;
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.BLOCK);
+            case 6:
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OLD);
+            case 7:
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.SHARPEN);
+            case 8:
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.LOMO);
+            case 9:
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.HDR);
+            case 10:
+                return ImageFilter.applyFilter(bitmap, ImageFilter.Filter.SOFT_GLOW);
             default:
                 return bitmap;
         }
