@@ -1,9 +1,12 @@
 package com.cs496.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class AddContactActivity extends FragmentActivity {
     private EditText tvName;
@@ -23,6 +26,8 @@ public class AddContactActivity extends FragmentActivity {
         cancelBtn = findViewById(R.id.popupCancelBtn);
         addBtn = findViewById(R.id.popupAddBtn);
 
+        tvName.setText("", null);
+        tvNumber.setText("", null);
 
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,8 +46,14 @@ public class AddContactActivity extends FragmentActivity {
             public void onClick(View view) {
                 String name = tvName.getText().toString();
                 String number = tvNumber.getText().toString();
-                if (name != "" && number != ""){
-                    //Intent intent;
+                if (name != "" && number != "") {
+                    Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+                    intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+                    intent.putExtra(ContactsContract.Intents.Insert.NAME, name);
+                    intent.putExtra(ContactsContract.Intents.Insert.PHONE, number);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please type name and number.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
