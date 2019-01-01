@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Camera;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.FaceDetector;
@@ -320,7 +321,10 @@ public class Tab3Etc extends Fragment {
         rotateButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                newPicture.setRotation(newPicture.getRotation() - 90);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(-90);
+                mainImage = Bitmap.createBitmap(mainImage, 0, 0, mainImage.getWidth(), mainImage.getHeight(), matrix, true);
+                LoadPicture(0);
             }
         });
 
@@ -347,17 +351,14 @@ public class Tab3Etc extends Fragment {
             if (resultCode == getActivity().RESULT_OK) {
                 try {
                     String path = data.getExtras().getString("picPath");
-                    Log.d("sendPic>>>>>", "received path: " + path);
                     Bitmap bp = CameraUtils.optimizeBitmap(5, path);
 
                     if (bp != null) {
-                        Log.d("sendPic>>>>>", "bp not null");
                         mainImage = bp;
                         shareImage = mainImage;
                         newPicture.setImageBitmap(mainImage);
                     }
                 } catch (Exception e) {
-                    Log.d("sendPic>>>>>", "cannot get path");
                     e.printStackTrace();
                 }
             } else if (resultCode == getActivity().RESULT_CANCELED) {
@@ -437,6 +438,9 @@ public class Tab3Etc extends Fragment {
     }
 
     private Bitmap ApplyFilterByIndex(Bitmap bitmap, int value) {
+        int dstHeight = 280;
+        int dstWidth = bitmap.getWidth() * dstHeight / bitmap.getHeight();
+        bitmap = Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, false);
         switch (value) {
             case 0:
 
@@ -446,10 +450,10 @@ public class Tab3Etc extends Fragment {
                 shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.GRAY);
                 return shareImage;
             case 2:
-                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.AVERAGE_BLUR, 9);
+                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.AVERAGE_BLUR, 2);
                 return shareImage;
             case 3:
-                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OIL, 10);
+                shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.OIL, 3);
                 return shareImage;
             case 4:
                 shareImage = ImageFilter.applyFilter(bitmap, ImageFilter.Filter.NEON, 200, 50, 100);

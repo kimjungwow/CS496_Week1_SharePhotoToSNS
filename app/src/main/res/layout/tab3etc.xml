@@ -121,7 +121,7 @@
         <ImageView
             android:id="@+id/newImage"
             android:layout_width="match_parent"
-            android:layout_height="320dp"
+            android:layout_height="280dp"
             android:layout_gravity="center"
             android:baselineAligned="false"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -134,14 +134,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop = "20dp"/>
+            android:paddingTop = "10dp"/>
         
         <ImageButton
             android:id = "@+id/rotateButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="30dp"
             android:background="@drawable/rotate_image"
             android:layout_gravity="right"/>
 
