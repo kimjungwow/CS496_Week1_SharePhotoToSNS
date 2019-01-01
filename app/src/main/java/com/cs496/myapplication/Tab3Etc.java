@@ -18,6 +18,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -312,6 +313,8 @@ public class Tab3Etc extends Fragment {
                     String title = sdf.format(new Date());
                     MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), newBP ,title, "description");
                     Toast.makeText(getApplicationContext(), "Image saved",Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(getActivity().getApplicationContext(), SaveActivity.class);
+                    startActivity(i);
                 }
 
                 else {

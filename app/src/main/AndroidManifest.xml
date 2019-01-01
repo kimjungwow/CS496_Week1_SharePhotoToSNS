@@ -36,6 +36,7 @@
         <activity android:name="com.cs496.myapplication.AddContactActivity"
             android:theme="@style/Theme.Transparent" />
         <activity android:name="com.cs496.myapplication.CameraActivity" />
+        <activity android:name="com.cs496.myapplication.SaveActivity" />
         <activity
             android:name="com.cs496.myapplication.Main2Activity"
             android:label="혜영정우"

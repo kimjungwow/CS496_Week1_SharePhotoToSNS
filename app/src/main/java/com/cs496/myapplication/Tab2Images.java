@@ -84,7 +84,7 @@ public class Tab2Images extends Fragment {
         return listOfAllImages;
     }
 
-    protected void loadPictures(){
+    public void loadPictures(){
         ArrayList<String> imagePaths = getImagesPath(this.getActivity());
         adapter = new ImageAdapter(getActivity().getApplicationContext(), R.layout.row, imagePaths);
         gridview.setAdapter(adapter);
