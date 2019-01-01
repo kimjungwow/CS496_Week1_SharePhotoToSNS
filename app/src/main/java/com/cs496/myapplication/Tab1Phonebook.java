@@ -105,7 +105,8 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
         msgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (contactsListView.getCheckedItemCount() != 0) {
+                if (contactsListView.getCheckedItemCount() != 0 && sel_pos!=-1) {
+
 
 
                     Uri smsUri;
@@ -136,6 +137,7 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
                     }
 
 
+                    contactsListView.clearChoices();
                     startActivity(intent);
 
                 } else {

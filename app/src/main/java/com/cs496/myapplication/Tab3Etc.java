@@ -96,8 +96,6 @@ public class Tab3Etc extends Fragment {
     String mediaPath = Environment.getExternalStorageDirectory() + filename;
 
     boolean writePermission;
-    boolean readPermission;
-    ImageAdapter adapter;
 
     CallbackManager callbackManager;
     ShareDialog shareDialog;
@@ -156,6 +154,7 @@ public class Tab3Etc extends Fragment {
         snsradio = rootView.findViewById(R.id.snsradiogroup);
         back = rootView.findViewById(R.id.back);
 
+        writePermission = writePermissionCheck();
 
         mainImage = BitmapFactory.decodeResource(getResources(), R.drawable.default_empty_image);
 
@@ -306,14 +305,18 @@ public class Tab3Etc extends Fragment {
             @Override
             public void onClick(View view) {
 
-                BitmapDrawable filteredDrawable = (BitmapDrawable) newPicture.getDrawable();
-                Bitmap newBP = filteredDrawable.getBitmap();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                String title = sdf.format(new Date());
-                MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), newBP, title, "description");
-                Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
+                if (writePermission){
+                    BitmapDrawable filteredDrawable = (BitmapDrawable) newPicture.getDrawable();
+                    Bitmap newBP = filteredDrawable.getBitmap();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                    String title = sdf.format(new Date());
+                    MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), newBP ,title, "description");
+                    Toast.makeText(getApplicationContext(), "Image saved",Toast.LENGTH_SHORT).show();
+                }
 
-
+                else {
+                    Toast.makeText(getApplicationContext(), "Cannot save image.", Toast.LENGTH_SHORT).show();
+                }
             }
 
         });
@@ -474,12 +477,12 @@ public class Tab3Etc extends Fragment {
         return PermissionChecker.checkSelfPermission(getContext(), permission);
     }
 
-    public boolean ReadPermissioncheck() {
-        if (checkselfpermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+    public boolean writePermissionCheck() {
+        if (checkselfpermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
-            if (checkselfpermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+            if (checkselfpermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 return true;
             } else {
                 return false;

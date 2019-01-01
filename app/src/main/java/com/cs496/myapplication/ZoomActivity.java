@@ -57,6 +57,7 @@ public class ZoomActivity extends FragmentActivity {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
                     String title = sdf.format(new Date());
                     MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), newBP ,title, "description");
+                    Toast.makeText(getApplicationContext(), "Image saved",Toast.LENGTH_SHORT).show();
                 }
 
                 else {

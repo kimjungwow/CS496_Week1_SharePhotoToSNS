@@ -59,6 +59,13 @@ public class AddContactActivity extends FragmentActivity {
         });
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        tvName.setText("", null);
+        tvNumber.setText("", null);
+    }
+
     public void closePopUp(){
         onBackPressed();
     }
