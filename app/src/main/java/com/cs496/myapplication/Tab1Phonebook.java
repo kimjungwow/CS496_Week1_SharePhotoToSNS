@@ -2,12 +2,15 @@
 package com.cs496.myapplication;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -20,13 +23,19 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.PermissionChecker;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,8 +55,8 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
     public int sel_pos = -1;
 
-    public FloatingActionButton msgButton;
-
+    private FloatingActionButton msgButton;
+    private FloatingActionButton addButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,6 +71,8 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
 
 
         msgButton = (FloatingActionButton) rootView.findViewById(R.id.messageButton);
+        addButton = rootView.findViewById(R.id.addContactButton);
+
         return rootView;
     }
 
@@ -74,8 +85,7 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
             loadContacts(contactsListView);
         }
 
-
-
+        WritePermissioncheck();
 
         contactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -139,7 +149,17 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
             }
         });
 
-
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (WritePermissioncheck()) {
+                    Intent intent = new Intent(getActivity().getApplicationContext(), AddContactActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getContext(), "Cannot add contact.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 
@@ -157,6 +177,19 @@ public class Tab1Phonebook extends Fragment implements ActivityCompat.OnRequestP
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 100);
             if (checkselfpermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 loadContacts(contactsListView);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public boolean WritePermissioncheck() {
+        if (checkselfpermission(Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_CONTACTS}, 100);
+            if (checkselfpermission(Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 return true;
             } else {
                 return false;
