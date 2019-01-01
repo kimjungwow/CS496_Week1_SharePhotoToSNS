@@ -88,9 +88,11 @@ public class Tab2Images extends Fragment {
         ArrayList<String> imagePaths = getImagesPath(this.getActivity());
         adapter = new ImageAdapter(getActivity().getApplicationContext(), R.layout.row, imagePaths);
         gridview.setAdapter(adapter);
+
     }
 
     public int checkselfpermission(String permission) {
+
         return PermissionChecker.checkSelfPermission(getContext(), permission);
     }
 
@@ -98,6 +100,8 @@ public class Tab2Images extends Fragment {
         if (checkselfpermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
+
+
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
             if (checkselfpermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 return true;
@@ -106,6 +110,7 @@ public class Tab2Images extends Fragment {
             }
         }
     }
+
 
     public boolean WritePermissioncheck() {
         if (checkselfpermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
