@@ -4,7 +4,7 @@
 
 
 
-    //enable the app to read/write contacts
+    <!-- enable the app to read/write contacts -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
@@ -39,7 +39,7 @@
         <activity android:name="com.cs496.myapplication.SaveActivity" />
         <activity
             android:name="com.cs496.myapplication.Main2Activity"
-            android:label="혜영정우"
+            android:label="ShareMyLife"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
