@@ -9,19 +9,17 @@
 - There are four tabs: (1) Phone book, (2) Gallery, (3) Upload photos to SNS
 - Although the additional functions could be implemented freely, the first and second tabs were mandatory.
 - The third tab was freely selected topic.
-  - I chose to implement uploading photos to SNS because linking android application with SNS seems fun.
-#### 2.1 Phone book
-![image1](./images/tab1.jpg)  
+  - I chose to implement uploading photos to SNS because linking android application with SNS seems fun.  
+<img src="https://github.com/kimjungwow/CS496_Week1_SharePhotoToSNS/blob/master/images/tab1.jpg" width="32%"></img> <img src="https://github.com/kimjungwow/CS496_Week1_SharePhotoToSNS/blob/master/images/tab2_2.jpg" width="32%"></img> <img src="https://github.com/kimjungwow/CS496_Week1_SharePhotoToSNS/blob/master/images/tab3.jpg" width="32%"></img>    
+#### 2.1 Phone book  
 - Displays the list of phone numbers in phone using gridview.
 - Allow upward and downward scrolling.
 - Allow selecting one person to send SMS.
 - Allow adding contact in the application.
 #### 2.2 Gallery
-![image2](./images/tab2_2.jpg)
 - Displays the list of photos in phone.
 - Enable various filters to be applied to pictures.
 #### 2.3 Upload photos to SNS
-![image3](./images/tab3.jpg)
 - Display a photo from gallery or an impromptu photograph using a camera.
 - Enable various filters to be applied to pictures.
 - Allow uploading filtered photo to SNS
