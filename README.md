@@ -10,6 +10,8 @@
 - Although the additional functions could be implemented freely, the first and second tabs were mandatory.
 - The third tab was freely selected topic.
   - I chose to implement uploading photos to SNS because linking android application with SNS seems fun.  
+  
+  
 <img src="https://github.com/kimjungwow/CS496_Week1_SharePhotoToSNS/blob/master/images/tab1.jpg" width="32%"></img> <img src="https://github.com/kimjungwow/CS496_Week1_SharePhotoToSNS/blob/master/images/tab2_2.jpg" width="32%"></img> <img src="https://github.com/kimjungwow/CS496_Week1_SharePhotoToSNS/blob/master/images/tab3.jpg" width="32%"></img>    
 #### 2.1 Phone book  
 - Displays the list of phone numbers in phone using gridview.
