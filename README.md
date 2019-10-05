@@ -1,4 +1,4 @@
-# Project ShareMyLife
+# CS496_Week1
 
 - This project was done in the first week of 2018 Winter-CS496(몰입캠프) course at KAIST with [@hyeyoung0112](https://github.com/hyeyoung0112).   
 
